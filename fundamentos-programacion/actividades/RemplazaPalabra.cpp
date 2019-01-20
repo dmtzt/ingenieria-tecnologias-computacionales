@@ -1,7 +1,8 @@
 /* 
  * RemplazaPalabra.cpp
  * 
- * Description
+ * Reemplaza todas las incidencias de una palabra original
+ * por una palabra nueva en una frase dada
  *
  * David Alejandro Martinez Tristan
  * 13/11/2018
@@ -14,19 +15,25 @@ using namespace std;
 
 int main(void)
 {
-    int found = 0;
-    string frase, palabra1, palabra2;
+    int pos = 0;
+    string frase, palabra_original, palabra_nueva;
 
+    // Leer frase y palabras nueva y original
     getline(cin, frase);
-    getline(cin, palabra1);
-    getline(cin, palabra2);
+    cin >> palabra_original;
+    cin >> palabra_nueva;
 
-    do
+    // Encontrar una por una las incidencias de la palabra original
+    while(frase.find(palabra_original, pos) != string::npos)
     {
-        found = frase.find(palabra1);
-        frase.replace(found, palabra2.size() - 1, palabra2);
+        // Actualizar posicion de la incidencia mas proxima
+        pos = frase.find(palabra_original, pos);
+        // Reemplazar por palabra nueva
+        frase.replace(pos, palabra_original.size(), palabra_nueva);
     }
-    while();
+
+    // Imprimir frase modificada
+    cout << frase << endl;
 
     return 0;
 }
