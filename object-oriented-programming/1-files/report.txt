@@ -1,0 +1,6 @@
+ID Employee	Amount to pay
+1234		3600
+5678		640
+1357		600
+2468		1860
+Total: 6700

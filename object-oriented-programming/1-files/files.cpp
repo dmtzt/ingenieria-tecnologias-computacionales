@@ -16,7 +16,7 @@ int main(void)
     // 3- Open file
     textFile.open("numbers.txt");
 
-    // 4- Get/write content
+    // 4- Read/write content
     while(!textFile.eof())
     {
         textFile >> n;
@@ -24,7 +24,7 @@ int main(void)
         cout << n << " ";
     }
 
-    // 4- Close file <_ Important to avoid corruption
+    // 5- Close file <_ Important to avoid corruption
     textFile.close();
 
     return 0;

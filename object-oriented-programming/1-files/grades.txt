@@ -1,0 +1,4 @@
+David   Martinez    92  40  37
+Jose    Olvera      90  90  90
+Carlos Erco         3   2   1
+Armando Casas       100 100 100
