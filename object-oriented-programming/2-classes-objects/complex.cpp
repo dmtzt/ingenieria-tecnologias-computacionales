@@ -1,7 +1,11 @@
 /* 
  * complex.cpp
  * 
- * Description
+ * Creates two complex numbers objects: one with the default constructor
+ * and the other with user input values.
+ * Performs an addition to both objects, an update to the default object,
+ * and finally a substraction to both objects.
+ * For every modification to both objects their values are displayed.
  *
  * David Alejandro Martinez Tristan
  * 07/02/2019
