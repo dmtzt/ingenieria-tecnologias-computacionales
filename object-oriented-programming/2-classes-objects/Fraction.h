@@ -5,6 +5,10 @@
  * 31/01/2019
 */
 #include <iostream>
+// Create flags if they have not been created already
+// These directives are used to avoid including a class twice in the main program
+#ifndef Fraction_h
+#define Fraction_h
 
 using namespace std;
 
@@ -15,6 +19,7 @@ class Fraction
     public:
         Fraction();
         Fraction(int, int);
+        Fraction add(Fraction);
         int getNumerator();
         int getDenominator();
         void setNumerator(int);
@@ -35,6 +40,17 @@ Fraction::Fraction(int numerator, int denominator)
 {
     this->numerator = numerator;
     this->denominator = denominator;
+}
+
+/*
+ * Composition
+ * 
+*/
+Fraction Fraction::add(Fraction fraction)
+{
+    Fraction result;
+    result.setNumerator(numerator * fraction.getDenominator() 
+                        + fraction.getNumerator * denominator);
 }
 
 int Fraction::getNumerator()
@@ -79,3 +95,5 @@ void Fraction::divideFraction(int numerator, int denominator)
     this->numerator *= denominator;
     this->denominator *= numerator;
 }
+
+#endif
