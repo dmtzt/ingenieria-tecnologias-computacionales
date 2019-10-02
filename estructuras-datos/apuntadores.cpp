@@ -4,10 +4,14 @@ using namespace std;
 
 int main(void)
 {
-    int *pA, B = 10;
-    double *pX, Y = 1.54;
-    pA = &B;
-    pX = &Y;
+    double one[10];
+    //double two[5][5];
+    double value = 1.0;
+    double* ptr = &value;
 
-    pX = pA;
+    *one = value;
+    ptr = one;
+    ptr = &one;
+
+    cout << one[0];
 }
