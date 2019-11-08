@@ -20,5 +20,4 @@ int main()
         list.pop();
         list.print();
     }
-    
 }

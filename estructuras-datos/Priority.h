@@ -163,7 +163,7 @@ int Priority::top()
 
 int Priority::size()
 {
-    return heap.size();
+    return heap.size() - 1;
 }
 
 bool Priority::empty()
