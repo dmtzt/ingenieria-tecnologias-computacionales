@@ -48,6 +48,9 @@ class BST {
     void maxHelper(NodeT* aux, int& curr, int& width, int& max);
     void preOrderToStack(NodeT* r, stack<int>& s);
     void preOrderToAscQueue(NodeT* r, queue<int>& q);
+
+    void levelByLevelHelper();
+    void levelByLevel(queue<NodeT*>& nodes);
 };
 
 
@@ -423,5 +426,29 @@ queue<int> BST::toQueue()
   {
     q.push(s.top());
     s.pop();
+  }
+}
+
+void BST::levelByLevelHelper()
+{
+  queue<NodeT*> nodes;
+  nodes.push(root);
+
+  levelByLevel(nodes);
+}
+
+void BST::levelByLevel(queue<NodeT*>& nodes)
+{
+  if (!nodes.empty())
+  {
+    NodeT* curr = nodes.front();
+    nodes.pop();
+
+    if(curr->getLeft() != NULL)
+      nodes.push(curr->getLeft());
+    if (curr->getRight() != NULL)
+      nodes.push(curr->getRight());
+
+    levelByLevel(nodes);
   }
 }
