@@ -1,0 +1,34 @@
+`Casos de prueba
+	El tamaño del arreglo es 1
+		El caracter es el único
+	Calcular número de parejas
+	Seleccionar el caracter a la mitad
+	El número de parejas es par
+		Recorrer la posición al caracter anterior
+	El número de parejas es impar
+		Continuar
+	Comparar primer caracter con segundo caracter
+		Son iguales
+			Evaluar mitad izquierda
+		Son diferentes
+			Comparar segundo caracter con su posterior
+				Son iguales
+					Evaluar mitad derecha, con segundo caracter incluido
+				Son diferentes
+					El segundo caracter es el único
+
+
+ABBCCDDEEFF
+AABCCDDEEFF
+AABBCDDEEFF
+AABBCCDEEFF
+AABBCCDDEFF
+AABBCCDDEEF
+
+ABBCCDDEEFFGG
+AABCCDDEEFFGG
+AABBCDDEEFFGG
+AABBCCDEEFFGG
+AABBCCDDEFFGG
+AABBCCDDEEFGG
+AABBCCDDEEFFG
