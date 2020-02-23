@@ -1,0 +1,12 @@
+Condición: todos 0 o todos 1
+x Opción 1: de la mitad hacia los extremos
+  Opción 2: de izquierda a derecha, eliminar los pares y agregar a otro arreglo los que no se pueden eliminar
+
+001001001011
+
+101011001101
+11001101
+11
+
+0001001100111001111001101000111011011
+111

@@ -56,12 +56,17 @@ public class Display {
         canvas = new Canvas();
         canvas.setPreferredSize(new Dimension(width, height));
         canvas.setMaximumSize(new Dimension(width, height));
-        
+        canvas.setFocusable(false);
         // adding the canvas to the app window and packing to
         // get the right dimensions
         jframe.add(canvas);
         jframe.pack();
     }
+
+    public JFrame getJframe() {
+        return jframe;
+    }
+    
     /**
      * Returns the canvas of the game
      * @return the canvas

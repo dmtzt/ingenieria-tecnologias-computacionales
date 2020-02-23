@@ -7,12 +7,12 @@ import java.awt.image.BufferStrategy;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author david
  */
-public class Game implements Runnable{
+public class Game implements Runnable {
+
     private BufferStrategy bs; // to have several buffers when displaying
     private Graphics g; // to opaint objects
     private Display display; // to display in the game
@@ -21,8 +21,8 @@ public class Game implements Runnable{
     private int height; // height of the window
     private Thread thread; // thread to create the game
     private boolean running; //to set the game
-    private int x = 0;
-    private int direction = 1;
+    private Player player;
+    private KeyManager keyManager;
 
     @Override
     public void run() {
@@ -30,24 +30,24 @@ public class Game implements Runnable{
         // The IDE creates a default exception when the method is added
         // The exception must be erased and the method completed
         init();
-        
+
         int fps = 50;
-        
+
         double timeTick = 1000000000 / fps;
-        
+
         double delta = 0;
-        
+
         long now;
-        
+
         long lastTime = System.nanoTime();
         System.out.println("Valor de running: " + running);
         while (running) {
             now = System.nanoTime();
-            
+
             delta += (now - lastTime) / timeTick;
-            
+
             lastTime = now;
-        
+
             if (delta >= 1) {
                 tick();
                 render();
@@ -56,24 +56,17 @@ public class Game implements Runnable{
         }
         stop();
     }
-    
+
     public void tick() {
-        x += 1 * direction;
-        
-        if (x + 60 >= width) {
-            x = width - 60;
-            direction = -1;
-        }
-        else if (x <= 0) {
-            x = 0;
-            direction = 1;
-        }
+        keyManager.tick();
+        player.tick();
     }
+
     /**
-     * 
+     *
      * @param title
      * @param width
-     * @param height 
+     * @param height
      */
     // Variables must be initialized in the constructor or an init() method
     public Game(String title, int width, int height) {
@@ -81,30 +74,30 @@ public class Game implements Runnable{
         this.width = width;
         this.height = height;
         running = false;
+        keyManager = new KeyManager();
     }
-    
+
     private void init() {
-        display = new Display(title, width, height);
+        display = new Display(title, getWidth(), getHeight());
         Assets.init();
+        player = new Player(0, getHeight() - 100, 1, 100, 100, this);
+        display.getJframe().addKeyListener(keyManager);
     }
-    
+
     private void render() {
-        System.out.println("Entrando al render");
         bs = display.getCanvas().getBufferStrategy();
-        
+
         if (bs == null) {
             display.getCanvas().createBufferStrategy(3);
-        }
-        else
-        {
+        } else {
             g = bs.getDrawGraphics();
             g.drawImage(Assets.background, 0, 0, width, height, null);
-            g.drawImage(Assets.player, x, height - 200, 200, 200, null);
+            player.render((g));
             bs.show();
             g.dispose();
         }
     }
-    
+
     // A synchronized method cannot be running at the same time than
     // another synchronized method
     public synchronized void start() {
@@ -115,16 +108,27 @@ public class Game implements Runnable{
             thread.start();
         }
     }
-    
+
     public synchronized void stop() {
         if (running) {
             running = false;
             try {
                 thread.join();
-            }
-            catch (InterruptedException ie) {
+            } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
         }
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public KeyManager getKeyManager() {
+        return keyManager;
     }
 }
