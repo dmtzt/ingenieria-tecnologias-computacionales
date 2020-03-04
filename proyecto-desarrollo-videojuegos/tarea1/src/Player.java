@@ -28,6 +28,7 @@ public class Player extends Item {
     protected boolean downToggle;
     protected boolean leftToggle;
     protected boolean rightToggle;
+    protected boolean wallCollision;
     private Game game;
 
     public Player(int x, int y, int width, int height, Game game) {
@@ -40,7 +41,9 @@ public class Player extends Item {
         this.downToggle = false;
         this.leftToggle = false;
         this.rightToggle = false;
+        this.wallCollision = false;
         this.direction = RIGHT;
+        changeImage(false);
     }
 
     public void setDirection(int direction) {
@@ -65,6 +68,10 @@ public class Player extends Item {
 
     public void setRightToggle(boolean rightToggle) {
         this.rightToggle = rightToggle;
+    }
+
+    public void setWallCollision(boolean wallCollision) {
+        this.wallCollision = wallCollision;
     }
 
     public int getHeight() {
@@ -98,9 +105,18 @@ public class Player extends Item {
     public boolean getRightToggle() {
         return rightToggle;
     }
-
+    
+    public boolean getWallCollision() {
+        return wallCollision;
+    }
+    
     @Override
     public void tick() {
+        System.out.println("X: " + getX() + " Y: " + getY());
+        
+        if (wallCollision)
+            wallCollision = false;
+        
         if (game.getKeyManager().up) {
             // One-time-only-actions
             if (!getUpToggle()) {
@@ -201,6 +217,7 @@ public class Player extends Item {
             setRightToggle(false);
         }
 
+        // Move to the defined direction, at the defined speed
         switch (direction) {
             case UP:
                 setY(getY() - speed);
@@ -216,24 +233,34 @@ public class Player extends Item {
                 break;
         }
 
+        // Horizontal collisons
         if (getX() + 60 >= game.getWidth()) {
             setX(game.getWidth() - 60);
             setDirection(LEFT);
+            setWallCollision(true);
         } else if (getX() <= -30) {
             setX(-30);
             setDirection(RIGHT);
+            setWallCollision(true);
         }
+        // Vertical collisions
         if (getY() + 80 >= game.getHeight()) {
             setY(game.getHeight() - 80);
             setDirection(UP);
+            setWallCollision(true);
         } else if (getY() <= -20) {
             setY(-20);
             setDirection(DOWN);
+            setWallCollision(true);
         }
     }
 
     @Override
     public void render(Graphics g) {
         g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
+    }
+    
+    public void changeImage(boolean imageSwitch) {
+        Assets.setPlayerImage(imageSwitch);
     }
 }

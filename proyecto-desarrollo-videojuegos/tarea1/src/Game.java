@@ -62,6 +62,7 @@ public class Game implements Runnable {
         double delta = 0;
 
         long now;
+        long playerImageTime = 0;
 
         long lastTime = System.nanoTime();
         while (running) {
@@ -70,6 +71,15 @@ public class Game implements Runnable {
             delta += (now - lastTime) / timeTick;
 
             lastTime = now;
+            
+            if (player.getWallCollision()) {
+                playerImageTime = now;
+                player.changeImage(true);
+            }
+            
+            if ((now - playerImageTime) / 100000000 > 5) {
+                player.changeImage(false);
+            }
 
             if (delta >= 1) {
                 tick();

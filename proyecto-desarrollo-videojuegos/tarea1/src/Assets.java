@@ -14,8 +14,18 @@ import java.awt.image.BufferedImage;
 public class Assets {
     public static BufferedImage background;
     public static BufferedImage player;
+    public static BufferedImage cheems;
+    public static BufferedImage stonks;
     public static void init() {
         background = ImageLoader.loadImage("/images/background.jpg");
-        player = ImageLoader.loadImage("/images/cheems.png");
+        cheems = ImageLoader.loadImage("/images/cheems.png");
+        stonks = ImageLoader.loadImage( "/images/stonks.png");
+    }
+    
+    public static void setPlayerImage(boolean imageSwitch) {
+        if (imageSwitch)
+            player = stonks;
+        else
+            player = cheems;
     }
 }
