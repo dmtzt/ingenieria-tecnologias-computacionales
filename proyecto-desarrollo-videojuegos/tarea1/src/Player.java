@@ -108,24 +108,24 @@ public class Player extends Item {
                 setUpToggle(true);
                 // If the direction is up, accelerate
                 if (getDirection() == UP && getSpeed() < MAX_SPEED) {
-                        setSpeed(getSpeed() + ACCELERATION);
-                }
-                // If the direction is down
+                    setSpeed(getSpeed() + ACCELERATION);
+                } // If the direction is down
                 else if (getDirection() == DOWN) {
                     // If the deceleration stops the player, only change direction
-                    if (getSpeed() - ACCELERATION <= INITIAL_SPEED)
+                    if (getSpeed() - ACCELERATION <= INITIAL_SPEED) {
                         setDirection(UP);
-                    // Else, decelerate
-                    else
+                    } // Else, decelerate
+                    else {
                         setSpeed(getSpeed() - ACCELERATION);
-                } 
-                else if (getDirection() == LEFT || getDirection() == RIGHT)
+                    }
+                } else if (getDirection() == LEFT || getDirection() == RIGHT) {
                     setDirection(UP);
+                }
             }
-        }
-        else
+        } else {
             setUpToggle(false);
-        
+        }
+
         if (game.getKeyManager().down) {
             // One-time-only-actions
             if (!getDownToggle()) {
@@ -133,24 +133,24 @@ public class Player extends Item {
                 setDownToggle(true);
                 // If the direction is down, accelerate
                 if (getDirection() == DOWN && getSpeed() < MAX_SPEED) {
-                        setSpeed(getSpeed() + ACCELERATION);
-                }
-                // If the direction is up
+                    setSpeed(getSpeed() + ACCELERATION);
+                } // If the direction is up
                 else if (getDirection() == UP) {
                     // If the deceleration stops the player, only change direction
-                    if (getSpeed() - ACCELERATION <= INITIAL_SPEED)
+                    if (getSpeed() - ACCELERATION <= INITIAL_SPEED) {
                         setDirection(DOWN);
-                    // Else, decelerate
-                    else
+                    } // Else, decelerate
+                    else {
                         setSpeed(getSpeed() - ACCELERATION);
-                } 
-                else if (getDirection() == LEFT || getDirection() == RIGHT)
+                    }
+                } else if (getDirection() == LEFT || getDirection() == RIGHT) {
                     setDirection(DOWN);
+                }
             }
-        }
-        else
+        } else {
             setDownToggle(false);
-        
+        }
+
         if (game.getKeyManager().left) {
             // One-time-only-actions
             if (!getLeftToggle()) {
@@ -158,24 +158,24 @@ public class Player extends Item {
                 setLeftToggle(true);
                 // If the direction is left, accelerate
                 if (getDirection() == LEFT && getSpeed() < MAX_SPEED) {
-                        setSpeed(getSpeed() + ACCELERATION);
-                }
-                // If the direction is right
+                    setSpeed(getSpeed() + ACCELERATION);
+                } // If the direction is right
                 else if (getDirection() == RIGHT) {
                     // If the deceleration stops the player, only change direction
-                    if (getSpeed() - ACCELERATION <= INITIAL_SPEED)
+                    if (getSpeed() - ACCELERATION <= INITIAL_SPEED) {
                         setDirection(LEFT);
-                    // Else, decelerate
-                    else
+                    } // Else, decelerate
+                    else {
                         setSpeed(getSpeed() - ACCELERATION);
+                    }
+                } else if (getDirection() == UP || getDirection() == DOWN) {
+                    setDirection(LEFT);
                 }
-                else if (getDirection() == UP || getDirection() == DOWN)
-                    setDirection(LEFT);                
             }
-        }
-        else
+        } else {
             setLeftToggle(false);
-        
+        }
+
         if (game.getKeyManager().right) {
             // One-time-only-actions
             if (!getRightToggle()) {
@@ -183,26 +183,25 @@ public class Player extends Item {
                 setRightToggle(true);
                 // If the direction is right, accelerate
                 if (getDirection() == RIGHT && getSpeed() < MAX_SPEED) {
-                        setSpeed(getSpeed() + ACCELERATION);
-                }
-                // If the direction is left
+                    setSpeed(getSpeed() + ACCELERATION);
+                } // If the direction is left
                 else if (getDirection() == LEFT) {
                     // If the deceleration stops the player, only change direction
-                    if (getSpeed() - ACCELERATION <= INITIAL_SPEED)
+                    if (getSpeed() - ACCELERATION <= INITIAL_SPEED) {
                         setDirection(RIGHT);
-                    // Else, decelerate
-                    else
+                    } // Else, decelerate
+                    else {
                         setSpeed(getSpeed() - ACCELERATION);
-                } 
-                else if (getDirection() == UP || getDirection() == DOWN)
+                    }
+                } else if (getDirection() == UP || getDirection() == DOWN) {
                     setDirection(RIGHT);
+                }
             }
-        }
-        else
+        } else {
             setRightToggle(false);
-        
-        switch (direction)
-        {
+        }
+
+        switch (direction) {
             case UP:
                 setY(getY() - speed);
                 break;
@@ -216,9 +215,7 @@ public class Player extends Item {
                 setX(getX() + speed);
                 break;
         }
-        
-        System.out.println(direction + " " + speed);
-        
+
         if (getX() + 60 >= game.getWidth()) {
             setX(game.getWidth() - 60);
             setDirection(LEFT);
@@ -239,5 +236,4 @@ public class Player extends Item {
     public void render(Graphics g) {
         g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
     }
-
 }

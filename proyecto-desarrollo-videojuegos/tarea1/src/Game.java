@@ -64,7 +64,6 @@ public class Game implements Runnable {
         long now;
 
         long lastTime = System.nanoTime();
-        System.out.println("Valor de running: " + running);
         while (running) {
             now = System.nanoTime();
 
