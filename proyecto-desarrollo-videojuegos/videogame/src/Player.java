@@ -18,7 +18,7 @@ public class Player extends Item {
     private Game game;
     
     public Player(int x, int y, int direction, int width, int height, Game game) {
-        super(x, y);
+        super(x, y, width, height);
         this.direction = direction;
         this.width = width;
         this.height = height;

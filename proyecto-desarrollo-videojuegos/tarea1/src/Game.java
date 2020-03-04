@@ -24,7 +24,6 @@ public class Game implements Runnable {
     private Thread thread; // thread to create the game
     private boolean running; //to set the game
     private Player player;
-    private LinkedList<Enemy> enemies;
     private KeyManager keyManager;
     
     /**
@@ -45,14 +44,7 @@ public class Game implements Runnable {
     private void init() {
         display = new Display(title, getWidth(), getHeight());
         Assets.init();
-        player = new Player(0, getHeight() - 100, 1, 100, 100, this);
-        enemies = new LinkedList();
-        //(rand() b-a+1)+a, es un rango de 3-8, b=8, a=3
-        int random = (int) (Math.random() * 6) + 3;
-        for (int i = 1; i <= random; i++) {
-            Enemy enemy = new Enemy((int) (Math.random() * getWidth()) - 100, -100, 1, 100, 100, this);
-            enemies.add(enemy);
-        }
+        player = new Player(0, getHeight() - 100, 100, 100, this);
 
         display.getJframe().addKeyListener(keyManager);
     }
@@ -92,18 +84,6 @@ public class Game implements Runnable {
     public void tick() {
         keyManager.tick();
         player.tick();
-        for (Enemy enemy : enemies) {
-            enemy.tick();
-            if (player.collision(enemy)) {
-                player.setX(0);
-                player.setY(getHeight() - 100);
-                for (Enemy enem: enemies){
-                    enem.setX((int) (Math.random() * getWidth()) - 100);
-                    enem.setY(0);                
-                }
-            }
-            continue;
-        }
     }
 
     private void render() {
@@ -115,9 +95,6 @@ public class Game implements Runnable {
             g = bs.getDrawGraphics();
             g.drawImage(Assets.background, 0, 0, width, height, null);
             player.render((g));
-            for (Enemy enemy : enemies) {
-                enemy.render((g));
-            }
             bs.show();
             g.dispose();
     

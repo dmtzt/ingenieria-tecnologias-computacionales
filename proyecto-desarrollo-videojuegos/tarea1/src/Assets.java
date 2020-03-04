@@ -14,10 +14,8 @@ import java.awt.image.BufferedImage;
 public class Assets {
     public static BufferedImage background;
     public static BufferedImage player;
-    public static BufferedImage enemy;
     public static void init() {
         background = ImageLoader.loadImage("/images/background.jpg");
         player = ImageLoader.loadImage("/images/cheems.png");
-        enemy = ImageLoader.loadImage("images/sanic.png");
     }
 }
