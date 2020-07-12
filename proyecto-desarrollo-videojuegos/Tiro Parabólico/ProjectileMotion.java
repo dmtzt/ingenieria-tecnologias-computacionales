@@ -1,0 +1,8 @@
+/**
+ * ProjectileMotion
+ */
+
+public class ProjectileMotion {
+
+    
+}

@@ -13,21 +13,30 @@ import java.awt.Graphics;
  */
 public class TaxFile extends Item{
     private Game game;
+    private int speed;
     
-    public TaxFile(int x, int y, int width, int height, Game game) {
+    public TaxFile(int x, int y, int width, int height, int speed, Game game) {
         super(x, y, width, height);
         this.game = game;
+        this.speed = speed;
     }
 
     @Override
     public void tick() {
-        // moving enemy to follow player
-        setY(getY() + 4);
+        setY(getY() + speed);
         
     }
 
     @Override
     public void render(Graphics g) {
         g.drawImage(Assets.taxFile, getX(), getY(), getWidth(), getHeight(), null);
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }

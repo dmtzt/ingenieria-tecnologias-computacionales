@@ -112,7 +112,6 @@ public class Player extends Item {
     
     @Override
     public void tick() {
-        System.out.println("X: " + getX() + " Y: " + getY());
         
         if (wallCollision)
             wallCollision = false;

@@ -12,8 +12,8 @@ import java.awt.Rectangle;
  * @author david
  */
 public abstract class Item {
-    protected static final int X_TOLERANCE = 20;
-    protected static final int Y_TOLERANCE = 20;
+    protected static final int X_TOLERANCE = 10;
+    protected static final int Y_TOLERANCE = 10;
     protected int x;
     protected int y;
     protected int width;
@@ -73,7 +73,7 @@ public abstract class Item {
             // If both rectangles intersect
             if (recThis.intersects(recOther)) {
                 // If the intersection occurs between x and y tolerance values, it is valid
-                if (Math.abs(getX() - item.getX()) < X_TOLERANCE && Math.abs(getY() - item.getY()) < Y_TOLERANCE)
+                if (Math.abs(getX() - item.getX()) < X_TOLERANCE && Math.abs(getY() - item.getY()) > Y_TOLERANCE)
                     return true;
             }
         }   

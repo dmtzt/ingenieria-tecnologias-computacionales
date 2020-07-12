@@ -1,0 +1,103 @@
+8
+2 5
+
+void trionimio(arr[][], startRow, endRow, startCol, endCol, filledRow, filledCol, &count)
+	// If a single squared matrix is reached, end recursion
+	if (startRow == endRow)
+		return;
+
+	// Locate in which quadrant the filled squared is located
+	int location = locateQuadFilled(startRow, endRow, startCol, endCol, filledRow, filledCol);
+	switch (location)
+		case FIRST_QUAD;
+			firstQuad(filledRow, filledCol, count);
+			break;
+		case SECOND_QUAD;
+			secondQuad(filledRow, filledCol, count);
+			break;
+		case THIRD_QUAD;
+			thirdQuad(filledRow, filledCol, count);
+			break;
+		case FOURTH_QUAD;
+			fourthQuad(filledRow, filledCol, count);
+			break;
+
+		
+
+
+
+int locateQuadFilled(endRow, endCol, filledRow, filledCol)
+	if (filledRow <= endRow / 2 && filledCol <= startRow) / 2)
+		return FIRST_QUAD;
+	else if (filledRow <= endRow / 2 && filledCol > endCol / 2)
+		return SECOND_QUAD;
+	else if (filledRow > endRow / 2 && filledCol <= endCol / 2)
+		return THIRD_QUAD;
+	else if (filledRow > endRow / 2 && filledCol > endCol / 2)
+		return FOURTH_QUAD;
+	return ERROR;
+
+void fillUpLeft(filledRow, filledCol, &count)
+	arr[filledRow][filledCol + 1] = count;
+	arr[filledRow - 1][filledCol + 1] = count;
+	arr[filledRow - 1[filledCol] = count;
+	count++;
+void fillUpRight(filledRow, filledCol, &count)
+	arr[filledRow][filledCol - 1] = count;
+	arr[filledRow - 1][filledCol - 1] = count;
+	arr[filledRow - 1[filledCol] = count;
+	count++;
+void filldownLeft(filledRow, filledCol, &count)
+	arr[filledRow][filledCol + 1] = count;
+	arr[filledRow + 1][filledCol + 1] = count;
+	arr[filledRow + 1[filledCol] = count;
+	count++;
+void filldownRight(filledRow, filledCol, &count)
+	arr[filledRow][filledCol - 1] = count;
+	arr[filledRow + 1][filledCol - 1] = count;
+	arr[filledRow + 1[filledCol] = count;
+	count++;
+
+void firstQuad(filledRow, filledCol, &count)
+	fillDownLeft(count);
+	// Primer cuadrante
+	trionimio(arr[], startRow, endRow / 2, startCol, endCol / 2, filledRow, filledCol, count)
+	// Segundo cuadrante
+	trionimio(arr[], startRow, endRow / 2, endCol / 2 + 1, endCol, endRow / 2, endCol / 2 + 1, count)
+	// Tercer cuadrante
+	trionimio(arr[], startRow / 2 + 1, endRow, startCol, endCol / 2, endRow / 2 + 1, endCol / 2, count)
+	// Cuarto cuadrante
+	trionimio(arr[], endRow / 2 + 1, endRow, endCol / 2 + 1, endCol, endRow / 2 + 1, endCol / 2 + 1, count)
+
+void secondQuad(filledRow, filledCol, &count)
+	fillDownRight(count);
+	// Primer cuadrante
+	trionimio(arr[], startRow, endRow / 2, startCol, endCol / 2, endRow / 2, startCol / 2, count)
+	// Segundo cuadrante
+	trionimio(arr[], startRow, endRow / 2, endCol / 2 + 1, endCol, filledRow, filledCol, count)
+	// Tercer cuadrante
+	trionimio(arr[], startRow / 2 + 1, endRow, startCol, endCol / 2, endRow / 2 + 1, endCol / 2, count)
+	// Cuarto cuadrante
+	trionimio(arr[], endRow / 2 + 1, endRow, endCol / 2 + 1, endCol, endRow / 2 + 1, endCol / 2 + 1, count)
+
+void thirdQuad(filledRow, filledCol, &count)
+	fillUpLeft(count);
+	// Primer cuadrante
+	trionimio(arr[], startRow, endRow / 2, startCol, endCol / 2, endRow / 2, startCol / 2, count)
+	// Segundo cuadrante
+	trionimio(arr[], startRow, endRow / 2, endCol / 2 + 1, endCol, endRow / 2, endCol / 2 + 1, count)
+	// Tercer cuadrante
+	trionimio(arr[], startRow / 2 + 1, endRow, startCol, endCol / 2, filledRow, filledCol, count)
+	// Cuarto cuadrante
+	trionimio(arr[], endRow / 2 + 1, endRow, endCol / 2 + 1, endCol, endRow / 2 + 1, endCol / 2 + 1, count)
+
+void fourthQuad(filledRow, filledCol, &count)
+	fillUpRight(count);
+	// Primer cuadrante
+	trionimio(arr[], startRow, endRow / 2, startCol, endCol / 2, endRow / 2, startCol / 2, count)
+	// Segundo cuadrante
+	trionimio(arr[], startRow, endRow / 2, endCol / 2 + 1, endCol, endRow / 2, endCol / 2 + 1, count)
+	// Tercer cuadrante
+	trionimio(arr[], startRow / 2 + 1, endRow, startCol, endCol / 2, endRow / 2 + 1, endCol / 2, count)
+	// Cuarto cuadrante
+	trionimio(arr[], endRow / 2 + 1, endRow, endCol / 2 + 1, endCol, filledRow, filledCol, count)

@@ -1,0 +1,53 @@
+// Accumulated strength of all soldiers shot down by the current ball
+while (sumSoldiers + soldiers[pos] <= balls[i])
+        {
+            sumSoldiers += soldiers[pos];
+            pos++;
+        }
+
+        // If one or more soldiers were shot down
+        if (sumSoldiers > 0)
+        {
+            // Remaining power of current ball
+            sumBalls = balls[i] - sumSoldiers;
+            // Standing number of soldiers after the current ball
+            standing[i] = n - pos;
+            
+            // Reset accumulated strength
+            sumSoldiers = 0;
+        }
+        // If no soldiers were shot down
+        else
+        {
+            // Add power of current ball to the sum of the overall attack
+            sumBalls += balls[i];
+
+            // Check if the new sum beats the current soldier strength
+            if (sumBalls >= soldiers[pos])
+            {
+                // Remaining ball power
+                sumBalls = sumBalls - soldiers[pos];
+                // Standing number of soldiers after the current ball, the pos is updated
+                standing[i] = n - ++pos;
+                // Reset accumulated strength
+                sumSoldiers = 0;
+            }
+            else
+                // Standing number of soldiers stays the same
+                standing[i] = standing[i - 1];
+        }
+
+        // If all the soldiers have been shot down
+        if (pos == n)
+        {
+            // Raise them all up and reset pos and accumulated ball power
+            pos = 0;
+            sumBalls = 0;
+            // All soldiers are now standing
+            standing[i] = n;
+        }
+
+// Print standing soldiers after each ball
+    for (int i = 0; i < q; i++)
+        cout << standing[i] << endl;
+    

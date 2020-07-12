@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.LinkedList;
+import java.util.Set;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -21,11 +22,27 @@ public class Game implements Runnable {
     String title; // title of the window
     private int width; // width of the window
     private int height; // height of the window
+    private int collisionCounter;
+    private int score;
+    private int taxFileSpeed;
     private Thread thread; // thread to create the game
     private boolean running; //to set the game
+    private boolean spawn;
+    private boolean spawnControl;
+    private boolean speedControl;
     private Player player;
     private LinkedList<TaxFile> taxFiles;
     private KeyManager keyManager;
+    private static final long NANOSECS_TO_SECS = 1000000000;
+    private static final int SPAWN_RATE = 4;
+    private static final int WIDTH_OFFSET = 400;
+    private static final int COLUMNS = 50;
+    private static final int TAX_FILE_WIDTH = 80;
+    private static final int TAX_FILE_HEIGHT = 80;
+    private static final int SCORE_INCREMENT = 100;
+    private static final int SCORE_DECREMENT = 20;
+    private static final int X_SHIFT = 50;
+    private static final int INITIAL_TAX_FILE_SPEED = 1;
     
     /**
      *
@@ -46,13 +63,12 @@ public class Game implements Runnable {
         display = new Display(title, getWidth(), getHeight());
         Assets.init();
         player = new Player(0, getHeight() - 100, 1, 100, 100, this);
-        taxFiles = new LinkedList();
+        taxFiles = new LinkedList<>();
         //(rand() b-a+1)+a, es un rango de 3-8, b=8, a=3
-        //int random = (int) (Math.random() * 6) + 3;
-        //for (int i = 1; i <= random; i++) {
-          //  Enemy enemy = new Enemy((int) (Math.random() * getWidth()) - 100, -100, 1, 100, 100, this);
-            //enemies.add(enemy);
-        //}
+        taxFileSpeed = INITIAL_TAX_FILE_SPEED;
+        speedControl = false;
+        collisionCounter = 0;
+        score = 0;
 
         display.getJframe().addKeyListener(keyManager);
     }
@@ -71,6 +87,8 @@ public class Game implements Runnable {
 
         long now;
         
+        int seconds;
+        
         boolean createTaxFiles = false;
 
         long lastTime = System.nanoTime();
@@ -82,28 +100,41 @@ public class Game implements Runnable {
 
             lastTime = now;
             
-            if ((now - lastTime) / 1000000000 > 3)
-                createTaxFiles = true;
+            // Cada taza de spawn, genera nuevos personajes
+            seconds = (int) (System.nanoTime() / NANOSECS_TO_SECS);
+            if (seconds % SPAWN_RATE == 0)
+                setSpawn(true);            
+            else
+                setSpawn(false);
 
             if (delta >= 1) {
                 tick(createTaxFiles);
                 render();
                 delta--;
             }
+            
+            if (player.getLives() < 0)
+                break;
         }
         stop();
     }
 
     public void tick(boolean createTaxFiles) {
-        if (createTaxFiles) {
-            int random = (int) (Math.random() * 3) + 3;
+        if (getSpawn() && spawnControl == false) {
+            // Genera 6-8 enemigos
+            int random = (int) (Math.random() * 2) + 6;
             for (int i = 1; i <= random; i++) {
-                TaxFile taxFile = new TaxFile((int) (Math.random() * getWidth()) - 100, -100, 100, 100, this);
+                // Asigna una posición inicial aleatoria en x
+                int xPosTaxFile = (getWidth() + WIDTH_OFFSET)/ (int) (Math.random() * Math.random() * COLUMNS + 1) + X_SHIFT;
+                // Inicializa la instancia y agrégala a la lista encadenada
+                TaxFile taxFile = new TaxFile(xPosTaxFile, -TAX_FILE_HEIGHT, TAX_FILE_WIDTH, TAX_FILE_HEIGHT, taxFileSpeed, this);
                 taxFiles.add(taxFile);
             }
+            
+            spawnControl = true;
         }
-        
-        System.out.println(taxFiles.size());
+        else if (!getSpawn())
+            spawnControl = false;
         
         keyManager.tick();
         player.tick();
@@ -111,8 +142,33 @@ public class Game implements Runnable {
             taxFiles.get(i).tick();
             if (player.collision(taxFiles.get(i))) {
                 taxFiles.remove(i);
+                setScore(getScore() + SCORE_INCREMENT);
+                
+                for (TaxFile taxFile : taxFiles)
+                    taxFile.setSpeed(getTaxFileSpeed());
             }
+            else if (taxFiles.get(i).getY() - getHeight() > TAX_FILE_HEIGHT) {
+                setScore(getScore() - SCORE_DECREMENT);
+                collisionCounter++;
+                
+                if (collisionCounter > 9)
+                {
+                    player.setLives(player.getLives() - 1);
+                    
+                    if (speedControl == false)
+                        setTaxFileSpeed(getTaxFileSpeed() + 1);
+                    
+                    speedControl = true;
+                    collisionCounter = 0;
+                    
+                }
+                taxFiles.remove(i);
+            }
+            else if (!speedControl)
+                speedControl = false;
         }
+        
+        System.out.println(getTaxFileSpeed());
     }
 
     private void render() {
@@ -123,10 +179,17 @@ public class Game implements Runnable {
         } else {
             g = bs.getDrawGraphics();
             g.drawImage(Assets.background, 0, 0, width, height, null);
+            g.setColor(Color.white);
+            g.drawString(("Score: " + Integer.toString(getScore())), 10, 50);
+            g.drawString(("Lives: " + Integer.toString(player.getLives())), 10, 100);
             player.render((g));
             for (TaxFile taxFile : taxFiles) {
                 taxFile.render((g));
             }
+            
+            if (player.getLives() == 0)
+                g.drawString("GAME OVER", (getWidth() / 2 - 30), (getHeight() / 2));
+            
             bs.show();
             g.dispose();
     
@@ -155,6 +218,10 @@ public class Game implements Runnable {
         }
     }
     
+    public void setSpawn(boolean spawn) {
+        this.spawn = spawn;
+    }
+    
     public Player getPlayer() {
         return player;
     }
@@ -169,5 +236,25 @@ public class Game implements Runnable {
 
     public KeyManager getKeyManager() {
         return keyManager;
+    }
+    
+    private boolean getSpawn() {
+        return spawn;
+    }
+    
+    public int getScore() {
+        return score;
+    }
+    
+    public void setScore(int score) {
+        this.score = score;
+    }
+    
+    public int getTaxFileSpeed() {
+        return taxFileSpeed;
+    }
+
+    public void setTaxFileSpeed(int taxFileSpeed) {
+        this.taxFileSpeed = taxFileSpeed;
     }
 }
