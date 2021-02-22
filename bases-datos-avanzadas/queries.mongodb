@@ -1,0 +1,103 @@
+db.Registros.aggregate([
+    {$match: {
+        "EDAD": {$lt: "65"},
+        "DIABETES": "No",
+        "EPOC": "No",
+        "ASMA": "No",
+        "INMUSUPR": "No",
+        "HIPERTENSION": "No",
+        "OTRA_COM": "No",
+        "CARDIOVASCULAR": "No",
+        "OBESIDAD": "No",
+        "RENAL_CRONICA": "No",
+        "TABAQUISMO": "No",
+        "INTUBADO": "Sí"
+        }
+    }, 
+    {$project: {
+        "ENTIDAD_RES": 1,
+        "EDAD": 1,
+        }
+    }, 
+    {$group: {
+        _id: "$ENTIDAD_RES",
+        "Intubados sin COM -65 años": { "$sum": 1 }
+        }
+    },
+    {$sort: {
+        "Intubados sin COM -65 años": -1
+        }
+    }
+])
+
+db.Registros.aggregate([
+    {$match: {
+        "SEXO": "Mujer",
+        "INDIGENA": "Sí",
+        "EMBARAZO": "Sí",
+        $or: [{"CLASIFICACION_FINAL": "Caso de SARS-COV-2"}, {"CLASIFICACION_FINAL": "Caso de COVID-19"}]
+        }
+    }, 
+    {$group: {
+        _id: "$ENTIDAD_RES",
+        "Casos mujeres indígenas embarazadas": { "$sum": 1 }
+        }
+    },
+    {$sort: {
+        "Casos mujeres indígenas embarazadas": -1
+        }
+    }
+])
+
+db.Registros.aggregate([
+    {$match: {
+        "TIPO_PACIENTE": "Hospitalizado"
+        }
+    }, 
+    {$group: {
+        _id: {
+            "Sector": "$SECTOR",
+            "Sexo": "$SEXO"
+            },
+        "Casos": { "$sum": 1 }
+        }
+    }, 
+    {$sort: {
+        "_id.Sector": 1,
+        "Casos": -1
+        }
+    }
+])
+
+db.Registros.aggregate([
+/**
+     * specifications: The fields to
+     *   include or exclude.
+     */
+    $project: {
+      "ENTIDAD_RES": 1,
+      "_id": 0
+    },
+    /**
+     * _id: The id of the group.
+     * fieldN: The first field name.
+     */
+    $group: {
+      _id: "$ENTIDAD_RES",
+      "count": {"$sum": 1}
+    }
+])
+{
+  "EDAD": {$lt: "65"},
+  "DIABETES": "No",
+  "EPOC": "No",
+  "ASMA": "No",
+  "INMUSUPR": "No",
+  "HIPERTENSION": "No",
+  "OTRA_COM": "No",
+  "CARDIOVASCULAR": "No",
+  "OBESIDAD": "No",
+  "RENAL_CRONICA": "No",
+  "TABAQUISMO": "No",
+  "CLASIFICACION_FINAL": "Muerte por COVID-19"
+}

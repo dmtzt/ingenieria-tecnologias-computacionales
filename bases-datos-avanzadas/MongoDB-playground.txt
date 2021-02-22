@@ -1,0 +1,11 @@
+db.zips.find({"pop": {$lt: 1000}}).count()
+
+12  db.trips.find({"birth year": 1998}).count()
+18  db.trips.find({"birth year": {$gt: 1998}}).count()
+
+db.inspections.find({"result": "Out of Business", "sector": "Home Improvement Contractor - 100"}).count()
+db.zips.find({"$nor": [{"pop": {$lt: 5000}}, {"pop": {$gt: 1000000}}]}).count()
+
+db.companies.find({"$or": [{"$and": [{"founded_year": 2004}, {"$or": [{"category_code": "social"}, {"category_code": "web"}]}]}, {"$and": [{"founded_month": 10}, {"$or": []}}]}])
+
+db.companies.find({"$and": [{"$or": [{"founded_year": 2004}, {"founded_month": 10}]}, {"$or": [{"category_code": "social"}, {"category_code": "web"}]}]}).count()
