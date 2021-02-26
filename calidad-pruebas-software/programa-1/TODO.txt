@@ -1,0 +1,120 @@
+Requisitos:
+    Programación orientada a objetos
+    Contener 3 clases: main + 2 clases
+    Manejar casos de prueba
+
+Leer nombre del archivo tecleado por el usuario
+Abrir el archivo
+Validar:
+    El archivo existe
+    El archivo no está vacío
+Leer línea por línea:
+    Caso 1: línea en blanco
+    Caso 2: línea con comentario simple //
+    Caso 3: línea con comentario doble */ /*
+    Caso 4: línea con código
+Escribir el resumen
+Fin
+
+Diseño
+    Verificar que un archivo exista
+    Verificar que un archivo esté vacío
+    Verificar que una línea esté en blanco
+    
+    Comentarios:
+    Eliminar espacios en blanco antes de encontrar el primer caracter
+
+---------------------------------------------------------------------
+TODO
+Contadores a 0
+Bandera multilínea a false
+Leer nombre del archivo tecleado por el usuario
+Abrir el archivo
+Validar:
+    El archivo existe
+        El archivo no está vacío
+Leer línea por línea:
+    Bandera línea vacía a true
+    Si la bandera de comentario multilínea está activada:
+!       Actualizar contador multilínea
+    Iterar caracter por caracter:
+        Si no es un espacio o tab: // Tab se toman como 4 espacios
+            Bandera línea vacía a false
+            Si es un '/': 
+                El siguiente caracter es '/':
+!                   Comentario simple: actualizar contador
+                    Continuar con siguiente línea
+                El siguiente caracter es '*':
+                    Comentario doble: actualizar bandera a true
+!                   Actualizar contador
+                    Continuar con siguiente línea
+            Sino si es un '*':
+                El siguiente caracter es '/':
+                    Termina comentario doble: actualizar la bandera a false
+                    Continuar con siguiente línea
+        Si es espacio o tab: ignorar
+    Si la bandera de comentario multilínea está desactivada:
+        Si la bandera línea vacía está en true:
+!           Actualizar contador línea vacía
+        Si la bandera línea vacía está en false:
+            Actualizar contador línea de código
+Escribir el resumen
+
+
+
+    Caso 1: línea en blanco
+    Caso 2: línea con comentario simple //
+    Caso 3: línea con comentario doble */ /*
+    Caso 4: línea con código
+
+
+
+Casos de prueba:
+    La línea en blanco contiene solo espacios
+    La línea en blanco contiene solo tabs
+    La línea en blanco contiene espacios y tabs
+    La línea en blanco no contiene caracteres
+
+    Hay código antes del inicio de un comentario simple o multilínea
+    Hay código después del final de un comentario multilínea
+
+    Hay espacios o tabs antes del inicio de un comentario
+
+    Hay una línea en blanco en un comentario multilínea
+    El comentario multiínea no se cierra
+
+
+
+Clases:
+1. Main
+2. FileReader
+    Abre el archivo
+    Lee el archivo
+    Escanea línea por línea y actualiza contadores
+    Pasa valores de contadores a printer
+
+    private:
+        iostream file
+        string line
+        vector<string> errorLog
+
+        blankCount
+        commentsCount
+        codeCount
+
+    public methods:
+        openFile
+        readFile
+
+        getBlankCount
+        getCommentsCount
+        getCodeCount
+
+        getErrorLog
+
+3. Printer
+    Da formato a impresión
+    Imprime
+
+    public methods:
+        printStatistics(blankCount, commentsCount, codeCount, errorLog)
