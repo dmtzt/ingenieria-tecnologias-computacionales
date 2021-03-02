@@ -21,8 +21,8 @@ header{
 
 .navbar {
   background-color: grey;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .hamburger {
@@ -68,12 +68,29 @@ main {
     justify-content: space-evenly;
   }
 
+  .hamburger {
+    background-color: rgb(86, 86, 86);
+  }
+
   .product {
     border-radius: 5px;
+    border-color: rgb(240,240,240);
+    border-width: 3px;
+  }
+
+  main {
+    margin: 10px 80px 10px 80px;
   }
 }
 
 @media (min-width: 1025px) {
+   header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+
   .hamburger {
     display: none;
   }
@@ -82,5 +99,36 @@ main {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    color: white;
+    list-style-type: none;
+    font-weight: bold;
+    background-color: rgb(86, 86, 86);
+  }
+
+  .menu li {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .navbar {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .product {
+    border-color: rgb(240,240,240);
+    border-width: 3px;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 450px;
   }
 }
