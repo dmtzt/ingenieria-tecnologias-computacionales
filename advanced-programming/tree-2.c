@@ -1,3 +1,18 @@
+#define EXIT_PROGRAM 0
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node
+{
+    int data;
+    struct Node *left;
+    struct Node *right;
+} Node;
+
+typedef struct Tree
+{
+    Node *root;
+} Tree;
 
 void insert(Tree *tree, int data)
 {
@@ -6,23 +21,30 @@ void insert(Tree *tree, int data)
 
 void insertNode(Node *node, int data)
 {
-    if (node == NULL)
-    {
-        node = malloc(sizeof(Node));
-        node->left = node->right = NULL;
-        node->data = data;
-        printf("New value: %i\n", node->data);
-        return;
-    }
-
+    node = malloc(sizeof(Node));
+    node->left = node->right = NULL;
+    node->data = data;
+    printf("New value: %i\n", node->data);
+    return;
+ 
     if (data < node->data)
-        insertNode(node->left, data);
+    {
+        if (node->left == NULL)
+        {
+            insertNode(node->left, data);
+        }
+    }
+        
     else if (data > node->data)
-        insertNode(node->right, data);
+    {
+        if (node->right == NULL)
+        {
+            insertNode(node->right, data);
+        }
+    }
     else
         printf("Value exists: %i\n", node->data);
 }
-
 
     // Get root of tree
     Node *curr = tree->root;

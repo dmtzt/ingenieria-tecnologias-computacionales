@@ -1,0 +1,75 @@
+TODO:
+totalGlobal = 0
+FileReader fileReader
+Printer printer
+map<string, ClassEntry> base
+map<string, ClassEntry> new
+map<string, ClassEntry> reused
+
+Leer nombre de archivo
+
+while nombre de archivo no esté vacío (el usuario no haya dado enter solo)
+    Abrir archivo especificado con el fileReader
+    Si el archivo se pudo abrir
+        Leer archivo
+        Contar líneas de código
+        Realizar cálculos según el estándar de contabilización: T, I, B, D, M, A
+        Cerrar archivo
+        Si ya existen datos de la parte:
+            Acceder a su objeto en el mapa y actualizar datos
+        Si es una parte nueva:
+            Clasificar parte, crear objeto y agregar entrada a su arreglo correspondiente: base/new/reused
+        Agregar total de LDC del archivo al total global
+
+    Leer nuevo nombre de archivo
+
+Imprimir resultados en archivo "ConteoLDC.txt" usando el formato especificado
+Fin
+
+FileReader
+    readFile()
+        Contar LDC
+            Si es una línea en blanco (espacios o tabs) o
+            Si es una línea que solo contiene llaves
+                Omitir
+            Si es una línea que solo contiene comentarios
+                Procesar comentario en busca de identificadores
+                    Procesar línea, eliminando espacios o tabs entre los caracteres y comparar con el prefijo "//."
+                    Si el siguiente caracter es alfabético, comparar con los identificadores
+                        Si es una línea que contiene el comentario "//.i"
+                            items++
+                        Si es una línea que contiene el comentario "//.b =#"
+                            Extraer # de LDC base
+                            base += parseBase(line)
+                        Si es una línea que contiene el comentario "//.d=#"
+                            Extraer # de LDC eliminadas
+                            deleted += parseDeleted(line)
+                        Si es una línea que contiene el comentario "//.m"
+                            Extraer # de LDC modificadas
+                            modified++
+            Si no
+                total++
+        Fin
+
+    parseBase(line)
+        Extrae el número de LDC base de otra clase
+        base += value
+
+    parseDeleted(line)
+        Extrae el número de líneas borradas
+        deleted += deleted
+
+    createClassEntry()
+        Crear nuevo objeto tipo ClassEntry
+        Pasar: total, items, base, deleted, modified, added
+        Devolver nuevo objeto
+
+
+Casos de prueba
+1. La clase en cuestión no entra en ninguna de las categorías
+
+Casos de prueba - verbose
+1. Hay más de 2 LDC lógicas en una línea física
+2. Hay más de 2 partes en un mismo archivo
+3. El nombre de la parte no corresponde con el nombre del archivo
+4. Hay espacios o tabs entre los caracteres de un posible identificador
