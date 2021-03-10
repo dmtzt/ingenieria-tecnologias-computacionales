@@ -6,9 +6,10 @@ map<string, ClassEntry> base
 map<string, ClassEntry> new
 map<string, ClassEntry> reused
 
+Inicializar fileReader
 Leer nombre de archivo
 
-while nombre de archivo no esté vacío (el usuario no haya dado enter solo)
+Mientras el nombre de archivo no esté vacío (el usuario no haya dado enter solo)
     Abrir archivo especificado con el fileReader
     Si el archivo se pudo abrir
         Leer archivo
@@ -28,41 +29,72 @@ Fin
 
 FileReader
     readFile()
-        Contar LDC
-            Si es una línea en blanco (espacios o tabs) o
-            Si es una línea que solo contiene llaves
-                Omitir
-            Si es una línea que solo contiene comentarios
-                Procesar comentario en busca de identificadores
-                    Procesar línea, eliminando espacios o tabs entre los caracteres y comparar con el prefijo "//."
-                    Si el siguiente caracter es alfabético, comparar con los identificadores
-                        Si es una línea que contiene el comentario "//.i"
-                            items++
-                        Si es una línea que contiene el comentario "//.b =#"
-                            Extraer # de LDC base
-                            base += parseBase(line)
-                        Si es una línea que contiene el comentario "//.d=#"
-                            Extraer # de LDC eliminadas
-                            deleted += parseDeleted(line)
-                        Si es una línea que contiene el comentario "//.m"
-                            Extraer # de LDC modificadas
-                            modified++
-            Si no
-                total++
+        Leer línea
+        Eliminar todos los espacios y tabs de indentación
+        Si es una línea vacía
+            Leer siguiente línea
+        Eliminar todos los espacios restantes después del primer caracter
+        Si es una línea que solo contiene llaves
+            Leer siguiente línea
+        Leer caracter por caracter
+            Si contiene el inicio de un comentario multilínea
+                Activar bandera multilínea
+            Si contiene el fin de un comentario multilínea
+                Desactivar bandera multilínea
+            Si contiene comentario de una sola línea
+                Activar bandera comentario de una sola línea
+            Procesar comentario en busca de identificadores
+                Procesar línea, eliminando espacios o tabs entre los caracteres y comparar con el prefijo "//."
+                Si el siguiente caracter es alfabético, comparar con los identificadores
+                    Si es una línea que contiene un comentario "i"
+                        items++
+                    Si es una línea que contiene el comentario "b"
+                        Extraer # de LDC base: parseQuantity()
+                        base += parseQuantity("=#")
+                    Si es una línea que contiene el comentario "d"
+                        Extraer # de LDC eliminadas: parseQuantity()
+                        deleted += parseQuantity("=#")
+                    Si es una línea que contiene el comentario "m"
+                        modified++
+                    Si es cualquier otro caracter
+                        Agregar error al log: "Identificador no válido"
+                Si no es alfabético:
+                    Agregar error al log: "Identificador no válido"
+        Si no
+            Si la bandera multilínea está activada
+                No actualizar contador
+            Si no está activada
+            total++
         Fin
 
-    parseBase(line)
-        Extrae el número de LDC base de otra clase
-        base += value
+    parseQuantity()
+        Elimina los tabs y espacios antes del signo '='
+        Omite el signo igual
+        Elimina los tabs y espacios después del signo '='
+        Extrae todos los caracteres no vacíos restantes
+        Verifica que todos los caracteres sean dígitos
+        Si un caracter no es dígito:
+            Agregar error al log
+            Devolver código INVALID_QUANTITY (0)
+        Si todos los caracteres son dígitos
+            Devolver número casteado de string a int
+    
+    updateClassEntry(&ClassEntry)
+        Recibe una entrada por referencia cuando la clase ya cuenta con registros
+        Actualiza los datos
+        Fin
 
-    parseDeleted(line)
-        Extrae el número de líneas borradas
-        deleted += deleted
+    ClassEntry createClassEntry()
+        Crea una nueva entrada de la clase y la devuelve para ser agregada a su categoría correspondiente
+        Fin
 
-    createClassEntry()
-        Crear nuevo objeto tipo ClassEntry
-        Pasar: total, items, base, deleted, modified, added
-        Devolver nuevo objeto
+    int getCategory()
+        Si base > 0 && (modified > 0 || deleted > 0 || added > 0)
+            La clase es base
+        Si no, si base == 0 && modified == 0 && deleted == 0 && added > 0
+            La clase es nueva
+        Si no, si base > 0 && modified == 0 && deleted == 0 && added == 0
+            La clase es reusada
 
 
 Casos de prueba
@@ -73,3 +105,13 @@ Casos de prueba - verbose
 2. Hay más de 2 partes en un mismo archivo
 3. El nombre de la parte no corresponde con el nombre del archivo
 4. Hay espacios o tabs entre los caracteres de un posible identificador
+
+
+
+    parseBase(line)
+        Extrae el número de LDC base de otra clase
+        base += value
+
+    parseDeleted(line)
+        Extrae el número de líneas borradas
+        deleted += deleted
