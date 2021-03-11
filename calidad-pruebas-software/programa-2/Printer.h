@@ -9,6 +9,7 @@
 #define PRINTER_H
 #include <iostream>
 #include <map>
+#include <queue>
 #include <string>
 #include <vector>
 #include "ClassEntry.h"
@@ -19,7 +20,7 @@ using namespace std;
 class Printer
 {
     public:
-        void printStats(map<string, ClassEntry*>, map<string, ClassEntry*>, map<string, ClassEntry*>, int);
+        void printStats(queue<ClassEntry*>, queue<ClassEntry*>, queue<ClassEntry*>, int);
 };
 
 /*
@@ -28,57 +29,77 @@ class Printer
 */
 //.i
 //.m=2
-void Printer::printStats(map<string, ClassEntry*> baseClasses, 
-    map<string, ClassEntry*> newClassses, map<string, ClassEntry*> reusedClasses, int totalGlobal)
+void Printer::printStats(queue<ClassEntry*> baseClasses, 
+    queue<ClassEntry*> newClasses, queue<ClassEntry*> reusedClasses, int totalGlobal)
 {
     cout << "CLASES BASE:" << endl;
-    for (map<string, ClassEntry*>::iterator it = baseClasses.begin(); it != baseClasses.end(); it++)
+    ClassEntry* classEntry = NULL;
+    while (!baseClasses.empty())
     {
-        if (it->second->getTotal() > 0)
+        classEntry = baseClasses.front();
+        if (classEntry->getTotal() > 0)
         {
-            cout << it->second->getClassName() << ": ";
-            cout << "T=" << it->second->getTotal();
+            cout << classEntry->getClassName() << ": ";
+            cout << "T=" << classEntry->getTotal();
             
-            if (it->second->getItems() > 0)
-                cout << ", I=" << it->second->getItems();
-            if (it->second->getBase())
-                cout << ", B=" << it->second->getBase();
-            if (it->second->getDeleted())
-                cout << ", D=" << it->second->getDeleted();
-            if (it->second->getModified() > 0)
-                cout << ", M=" << it->second->getModified();
-            if (it->second->getAdded() > 0)
-                cout << ", A=" << it->second->getAdded();
+            if (classEntry->getItems() > 0)
+                cout << ", I=" << classEntry->getItems();
+            if (classEntry->getBase())
+                cout << ", B=" << classEntry->getBase();
+            if (classEntry->getDeleted())
+                cout << ", D=" << classEntry->getDeleted();
+            if (classEntry->getModified() > 0)
+                cout << ", M=" << classEntry->getModified();
+            if (classEntry->getAdded() > 0)
+                cout << ", A=" << classEntry->getAdded();
 
             cout << endl;
-        }
-        
+        }   
+
+        baseClasses.pop();
+        delete classEntry; 
     }
     
     cout << "--------------------------------------------" << endl;
     cout << "CLASES NUEVAS:" << endl;
-    for (map<string, ClassEntry*>::iterator it = newClassses.begin(); it != newClassses.end(); it++)
+    while (!newClasses.empty())
     {
-        cout << it->second->getClassName() << ": ";
-        cout << "T=" << it->second->getTotal() << ", ";
-        cout << "I=" << it->second->getItems() << ", ";
-        cout << "B=" << it->second->getBase() << ", ";
-        cout << "D=" << it->second->getDeleted() << ", ";
-        cout << "M=" << it->second->getModified() << ", ";
-        cout << "A=" << it->second->getAdded() << endl;
+        classEntry = newClasses.front();
+        if (classEntry->getTotal() > 0)
+        {
+            cout << classEntry->getClassName() << ": ";
+            cout << "T=" << classEntry->getTotal();
+            
+            if (classEntry->getItems() > 0)
+                cout << ", I=" << classEntry->getItems();
+
+            cout << endl;
+        }   
+
+        newClasses.pop(); 
+        delete classEntry;
     }
 
     cout << "--------------------------------------------" << endl;
     cout << "CLASES REUSADAS:" << endl;
-    for (map<string, ClassEntry*>::iterator it = reusedClasses.begin(); it != reusedClasses.end(); it++)
+    while (!reusedClasses.empty())
     {
-        cout << it->second->getClassName() << ": ";
-        cout << "T=" << it->second->getTotal() << ", ";
-        cout << "I=" << it->second->getItems() << ", ";
-        cout << "B=" << it->second->getBase() << ", ";
-        cout << "D=" << it->second->getDeleted() << ", ";
-        cout << "M=" << it->second->getModified() << ", ";
-        cout << "A=" << it->second->getAdded() << endl;
+        classEntry = reusedClasses.front();
+        if (classEntry->getTotal() > 0)
+        {
+            cout << classEntry->getClassName() << ": ";
+            cout << "T=" << classEntry->getTotal();
+            
+            if (classEntry->getItems() > 0)
+                cout << ", I=" << classEntry->getItems();
+            if (classEntry->getBase())
+                cout << ", B=" << classEntry->getBase();
+
+            cout << endl;
+        }   
+
+        reusedClasses.pop();
+        delete classEntry;
     }
 
     cout << "--------------------------------------------" << endl;

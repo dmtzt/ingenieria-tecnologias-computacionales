@@ -58,15 +58,14 @@ class FileReader
         ClassEntry* createClassEntry();
         void updateClassEntry(ClassEntry*);
         void updateClassEntry(ClassEntry*, int, int, int, int, int, int);
-        void calculateAdded(int, int, int);
+        int calculateAdded(int, int, int);
         string getClassName();
         int getTotal();
         int getItems();
         int getBase();
         int getDeleted();
         int getModified();
-        int getAdded(); 
-        int getCategory(int, int, int, int);
+        int getAdded();
         void print();
         vector<string> getErrorLog();
 };
@@ -135,14 +134,10 @@ void FileReader::readFile()
         // Ready line by line
         while (!file.eof())
         {
-            // DEBUG
-            if (isMultiLineComment)
-                cout << "Multiline" << endl;
             // Assume line is not a single-line comment
             isSingleLineComment = false;
             // Read line
             getline(file, line);
-            cout << line << endl;
 
             // If line has at least one character
             if (line.length() > 0)
@@ -160,11 +155,12 @@ void FileReader::readFile()
             while(line[1] == ' ' || line[1] == '\t')
                 line.erase(line.begin());
             
-            // Exclude if it only has curly brackets
-            if ( line.length() == 1 && (line[0] == '{' || line[0] == '}'))
+            // Exclude if it only has "{", "}" or "};"
+            if ((line.length() == 1 && (line[0] == '{' || line[0] == '}'))
+                || (line.length() == 2 && line[0] == '}' && line[1] == ';'))
                 continue;
                 
-            //.d
+            //.d=1
             //.m
             // Find single and multi-line comments and counting identifiers
             for (int i = 0; i < line.length(); i++)
@@ -173,86 +169,67 @@ void FileReader::readFile()
                 {
                     // Line is a single-line comment and is not inside a multi-line comment or a string
                     //.m
-                    if (line[i + 1] == '/' && line.length() > i + 2 && !isMultiLineComment && !isString)
+                    if (line[i + 1] == '/' && !isMultiLineComment && !isString)
                     {
-                        cout << "HERE" << endl;
-                        isSingleLineComment = true;
-                        //.d
+                        isSingleLineComment = (i + 1 > 1) ? false : true;
+                        //.d=1
                         // Check if line contains an identifier 
                         //.m
-                        if (line[i + 2] == '.' && line.length() > i + 3)
+                        if (line.length() > i + 2)
                         {
-                            // Check if it is an alphabetic identifier
-                            if (isalpha(line[i + 3]))
+                            if (line[i + 2] == '.' && line.length() > i + 3)
                             {
-                                // Update counters according to valid identifiers
-                                switch (tolower(line[i + 3]))
+                                // Check if it is an alphabetic identifier
+                                if (isalpha(line[i + 3]))
                                 {
-                                    case 'i':
-                                        items++;
-                                        cout << "ITEM" << endl;
-                                        break;
-                                    case 'b':
-                                        base += parseQuantity(line.substr(i + 4));
-                                        break;
-                                    case 'd':
-                                        deleted += parseQuantity(line.substr(i + 4));
-                                        break;
-                                    case 'm':
-                                        modified++;
-                                        break;
-                                    // Identifier not valid
-                                    default:
-                                        cout << "DEFAULT" << endl;
-                                        errorLog.push_back("Identificador no válido: //." + to_string(line[i + 3]));
-                                        break;
+                                    // Update counters according to valid identifiers
+                                    switch (tolower(line[i + 3]))
+                                    {
+                                        case 'i':
+                                            items++;
+                                            break;
+                                        case 'b':
+                                            base += parseQuantity(line.substr(i + 4));
+                                            break;
+                                        case 'd':
+                                            deleted += parseQuantity(line.substr(i + 4));
+                                            break;
+                                        case 'm':
+                                            modified++;
+                                            break;
+                                        // Undefined identifier
+                                        default:
+                                            errorLog.push_back("Identificador no definido: //." + to_string(line[i + 3]));
+                                            break;
+                                    }
+                                    break;
                                 }
-                                break;
+                                // Undefined identifier
+                                else
+                                {
+                                    errorLog.push_back("Identificador no definido: //." + to_string(line[i + 3]));
+                                    break;
+                                }  
                             }
-                            // Not valid non-alphabetic identifier
-                            else
-                            {
-                                cout << "NOT VALID" << endl;
-                                errorLog.push_back("Identificador no válido: //." + to_string(line[i + 3]));
-                                break;
-                            }  
                         }
                     }
                     // Line is the start of a multi-line comment
                     //.m
                     else if (line[i + 1] == '*')
-                    {
                         multiLineStart = true;
-                        cout << "EMPIEZA MULTILINEA" << endl;
-                    }
-                        //.d
-                        //.d
-                        //.d
+                        //.d=3
                 }
                 else if (line[i] == '*' && line.length() > i + 1)
                 {
                     // Line is the end of a multi-line comment
                     if (line[i + 1] == '/')
-                    {
                         multiLineEnd = true;
-                        cout << "TERMINA MULTILINEA" << endl;
-                    }
-                    //.d
-                    //.d
-                    //.d
+                    //.d=3
                 }
                 else if (line[i] == '\"')
                 {
                     if (!isMultiLineComment && !isSingleLineComment)
-                    {
-                        if (isString)
-                            cout << "STRING END" << endl;
-                        else
-                            cout << "STRING START" << endl;
-
                         isString = (isString) ? false : true;
-                        
-                    }                        
                 }
             }
 
@@ -261,10 +238,7 @@ void FileReader::readFile()
 
             // Assume line is a valid line if not inside a multi-line comment
             if (!isSingleLineComment && !isMultiLineComment)
-            {
-                cout << "TOTAL" << endl;
                 total++;
-            }
 
             if (multiLineEnd)
             {
@@ -273,8 +247,8 @@ void FileReader::readFile()
                 multiLineEnd = false;
             }
         }
-        calculateAdded(total, base, deleted);
-        cout << "End" << endl;
+
+        added = calculateAdded(total, base, deleted);
     }
 }
 
@@ -318,7 +292,9 @@ void FileReader::updateClassEntry(ClassEntry* classEntry)
     classEntry->setBase(classEntry->getBase() + base);
     classEntry->setDeleted(classEntry->getDeleted() + deleted);
     classEntry->setModified(classEntry->getModified() + modified);
-    classEntry->setAdded(classEntry->getAdded() + added);
+    classEntry->setAdded(calculateAdded(classEntry->getTotal() + total, 
+                                        classEntry->getBase() + base, 
+                                        classEntry->getDeleted() + deleted));
 }
 
 void FileReader::updateClassEntry(ClassEntry* classEntry, int t, int i, int b, int d, int m, int a)
@@ -331,9 +307,9 @@ void FileReader::updateClassEntry(ClassEntry* classEntry, int t, int i, int b, i
     classEntry->setAdded(classEntry->getAdded() + a);
 }
 
-void FileReader::calculateAdded(int t, int b, int d)
+int FileReader::calculateAdded(int t, int b, int d)
 {
-    added = t - b + d;
+    return t - b + d;
 }
 
 string FileReader::getClassName()
@@ -376,26 +352,6 @@ int FileReader::parseQuantity(string line)
     }
 
     return stoi(number);
-}
-
-int FileReader::getCategory(int b, int m, int d, int a)
-{
-     if (b > 0 && (m > 0 || d > 0 || a > 0))
-        {
-            cout << "BASE CLASS" << endl;
-            return BASE_CLASS;
-        }
-            
-        else if (b == 0 && m == 0 && d == 0 && a > 0)
-        {
-            cout << "NEW CLASS" << endl;
-            return NEW_CLASS;
-        }
-        else if (b > 0 && m == 0 && d == 0 && a == 0)
-        {
-            cout << "REUSED CLASS" << endl;
-            return REUSED_CLASS;
-        }
 }
 
 void FileReader::print()
