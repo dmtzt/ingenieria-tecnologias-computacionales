@@ -2,3 +2,5 @@ Banco.src
 Banco.txt
 Cliente.src
 Cuenta.txt
+Lista.txt
+Nodo.src

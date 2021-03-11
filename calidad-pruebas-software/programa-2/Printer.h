@@ -7,8 +7,9 @@
 */
 #ifndef PRINTER_H
 #define PRINTER_H
+#define OUTPUT_FILE_NAME "ConteoLDC.txt"
+#include <fstream>
 #include <iostream>
-#include <map>
 #include <queue>
 #include <string>
 #include <vector>
@@ -19,8 +20,9 @@ using namespace std;
 //.b=3
 class Printer
 {
+    ofstream file;
     public:
-        void printStats(queue<ClassEntry*>, queue<ClassEntry*>, queue<ClassEntry*>, int);
+        void printStats(queue<ClassEntry*>, queue<ClassEntry*>, queue<ClassEntry*>, int, vector<string>);
 };
 
 /*
@@ -30,79 +32,77 @@ class Printer
 //.i
 //.m=2
 void Printer::printStats(queue<ClassEntry*> baseClasses, 
-    queue<ClassEntry*> newClasses, queue<ClassEntry*> reusedClasses, int totalGlobal)
+    queue<ClassEntry*> newClasses, queue<ClassEntry*> reusedClasses, int totalGlobal, 
+    vector<string> errorLog)
 {
-    cout << "CLASES BASE:" << endl;
+    file.open(OUTPUT_FILE_NAME);
+    file << "CLASES BASE:" << endl;
     ClassEntry* classEntry = NULL;
     while (!baseClasses.empty())
     {
         classEntry = baseClasses.front();
         if (classEntry->getTotal() > 0)
         {
-            cout << classEntry->getClassName() << ": ";
-            cout << "T=" << classEntry->getTotal();
-            
-            if (classEntry->getItems() > 0)
-                cout << ", I=" << classEntry->getItems();
-            if (classEntry->getBase())
-                cout << ", B=" << classEntry->getBase();
-            if (classEntry->getDeleted())
-                cout << ", D=" << classEntry->getDeleted();
-            if (classEntry->getModified() > 0)
-                cout << ", M=" << classEntry->getModified();
-            if (classEntry->getAdded() > 0)
-                cout << ", A=" << classEntry->getAdded();
+            file << classEntry->getClassName() << ": ";
+            file << "T=" << classEntry->getTotal();
+            file << ", I=" << classEntry->getItems();
+            file << ", B=" << classEntry->getBase();
+            file << ", D=" << classEntry->getDeleted();
+            file << ", M=" << classEntry->getModified();
+            file << ", A=" << classEntry->getAdded();
 
-            cout << endl;
+            file << endl;
         }   
 
         baseClasses.pop();
         delete classEntry; 
     }
     
-    cout << "--------------------------------------------" << endl;
-    cout << "CLASES NUEVAS:" << endl;
+    file << "--------------------------------------------" << endl;
+    file << "CLASES NUEVAS:" << endl;
     while (!newClasses.empty())
     {
         classEntry = newClasses.front();
         if (classEntry->getTotal() > 0)
         {
-            cout << classEntry->getClassName() << ": ";
-            cout << "T=" << classEntry->getTotal();
-            
-            if (classEntry->getItems() > 0)
-                cout << ", I=" << classEntry->getItems();
+            file << classEntry->getClassName() << ": ";
+            file << "T=" << classEntry->getTotal();
+            file << ", I=" << classEntry->getItems();
 
-            cout << endl;
+            file << endl;
         }   
 
         newClasses.pop(); 
         delete classEntry;
     }
 
-    cout << "--------------------------------------------" << endl;
-    cout << "CLASES REUSADAS:" << endl;
+    file << "--------------------------------------------" << endl;
+    file << "CLASES REUSADAS:" << endl;
     while (!reusedClasses.empty())
     {
         classEntry = reusedClasses.front();
         if (classEntry->getTotal() > 0)
         {
-            cout << classEntry->getClassName() << ": ";
-            cout << "T=" << classEntry->getTotal();
-            
-            if (classEntry->getItems() > 0)
-                cout << ", I=" << classEntry->getItems();
-            if (classEntry->getBase())
-                cout << ", B=" << classEntry->getBase();
+            file << classEntry->getClassName() << ": ";
+            file << "T=" << classEntry->getTotal();
+            file << ", I=" << classEntry->getItems();
+            file << ", B=" << classEntry->getBase();
 
-            cout << endl;
+            file << endl;
         }   
 
         reusedClasses.pop();
         delete classEntry;
     }
 
-    cout << "--------------------------------------------" << endl;
-    cout << "Total de LDC=" << totalGlobal << endl;
+    file << "--------------------------------------------" << endl;
+    file << "Total de LDC=" << totalGlobal << endl;
+
+    cout << errorLog.size() << endl;
+
+    for (int i = 0; i < errorLog.size(); i++)
+        cout << errorLog[i] << endl;
+
+    file.close();
 }
 #endif

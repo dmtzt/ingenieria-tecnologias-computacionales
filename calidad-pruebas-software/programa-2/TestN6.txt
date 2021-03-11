@@ -1,0 +1,10 @@
+linea;
+linea;
+/*
+ * comentario
+ * //.d=2
+ */
+linea;
+
+/* //.m */
+/* //.b=6 */

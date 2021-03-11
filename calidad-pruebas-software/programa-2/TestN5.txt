@@ -1,0 +1,6 @@
+linea;
+linea = "//.m";
+linea;
+linea;
+linea = "//.d=2";
+linea = "//.i";

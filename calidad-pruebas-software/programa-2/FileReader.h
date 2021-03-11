@@ -57,7 +57,6 @@ class FileReader
         //.d=3
         ClassEntry* createClassEntry();
         void updateClassEntry(ClassEntry*);
-        void updateClassEntry(ClassEntry*, int, int, int, int, int, int);
         int calculateAdded(int, int, int);
         string getClassName();
         int getTotal();
@@ -127,7 +126,11 @@ void FileReader::readFile()
     //.b=3
     // File is empty: update error log
     if (file.peek() == std::ifstream::traits_type::eof())
-        errorLog.push_back("El archivo está vacío");
+    {
+        errorLog.push_back("El archivo " + fileName + " está vacío");
+        cout << "VACIO" << endl;
+    }
+        
     // File is not empty
     else
     {
@@ -167,15 +170,16 @@ void FileReader::readFile()
             {
                 if (line[i] == '/' && line.length() > i + 1)
                 {
+                    // Line is the start of a multi-line comment
+                    if (line[i + 1] == '*') //.m
+                        multiLineStart = true;
                     // Line is a single-line comment and is not inside a multi-line comment or a string
-                    //.m
-                    if (line[i + 1] == '/' && !isMultiLineComment && !isString)
+                    else if (line[i + 1] == '/' && !isMultiLineComment && !isString) //.m
                     {
                         isSingleLineComment = (i + 1 > 1) ? false : true;
                         //.d=1
                         // Check if line contains an identifier 
-                        //.m
-                        if (line.length() > i + 2)
+                        if (line.length() > i + 2) //.m
                         {
                             if (line[i + 2] == '.' && line.length() > i + 3)
                             {
@@ -202,7 +206,7 @@ void FileReader::readFile()
                                             errorLog.push_back("Identificador no definido: //." + to_string(line[i + 3]));
                                             break;
                                     }
-                                    break;
+                                    //break;
                                 }
                                 // Undefined identifier
                                 else
@@ -213,28 +217,26 @@ void FileReader::readFile()
                             }
                         }
                     }
-                    // Line is the start of a multi-line comment
-                    //.m
-                    else if (line[i + 1] == '*')
-                        multiLineStart = true;
-                        //.d=3
+                    //.d=3
                 }
                 else if (line[i] == '*' && line.length() > i + 1)
                 {
                     // Line is the end of a multi-line comment
                     if (line[i + 1] == '/')
                         multiLineEnd = true;
+                        
                     //.d=3
                 }
+                // Current read is inside a string
                 else if (line[i] == '\"')
                 {
                     if (!isMultiLineComment && !isSingleLineComment)
                         isString = (isString) ? false : true;
                 }
-            }
 
-            if (multiLineStart)
-                isMultiLineComment = true;
+                if (multiLineStart && !isMultiLineComment)
+                    isMultiLineComment = true;
+            }
 
             // Assume line is a valid line if not inside a multi-line comment
             if (!isSingleLineComment && !isMultiLineComment)
@@ -295,16 +297,6 @@ void FileReader::updateClassEntry(ClassEntry* classEntry)
     classEntry->setAdded(calculateAdded(classEntry->getTotal() + total, 
                                         classEntry->getBase() + base, 
                                         classEntry->getDeleted() + deleted));
-}
-
-void FileReader::updateClassEntry(ClassEntry* classEntry, int t, int i, int b, int d, int m, int a)
-{
-    classEntry->setTotal(classEntry->getTotal() + t);
-    classEntry->setItems(classEntry->getItems() + i);
-    classEntry->setBase(classEntry->getBase() + b);
-    classEntry->setDeleted(classEntry->getDeleted() + d);
-    classEntry->setModified(classEntry->getModified() + m);
-    classEntry->setAdded(classEntry->getAdded() + a);
 }
 
 int FileReader::calculateAdded(int t, int b, int d)
