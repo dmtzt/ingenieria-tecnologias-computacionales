@@ -1,14 +1,3 @@
-/*
- * 
- * Abre un archivo indicado por el usuario y cuenta el número de líneas en blanco,
- * con código y con comentarios
- * Al concluir, cierra el archivo y deja preparados los valores para ser
- * provistos al Printer
- * 
- * David Alejandro Martínez Tristán A01610267
- * Fecha de creación: 22/feb/2021
- * Fecha de modificación: 23/feb/2021
-*/
 //.b=2
 #ifndef FILEREADER_H
 #define FILEREADER_H
@@ -72,7 +61,6 @@ class FileReader
         int getDeleted();
         int getModified();
         int getAdded();
-        void print();
         //.b=1
         vector<string> getErrorLog();
 };
@@ -182,6 +170,7 @@ void FileReader::readFile()
                 //.b=1
                 if (line[i + 1] == '*')
                     multiLineStart = true;
+                    
                 //.d=4
                 // Line is a single-line comment and is not inside a multi-line comment or a string
                 else if (line[i + 1] == '/' && !isMultiLineComment && !isString) //.m
@@ -236,14 +225,17 @@ void FileReader::readFile()
                 // Line is the end of a multi-line comment
                 //.b=1
                 if (line[i + 1] == '/')
+                {
                     multiLineEnd = true;
+                }
+                    
                     
                 //.d=4
             }
             // Current read is inside a string
             else if (line[i] == '\"')
             {
-                if (!isMultiLineComment && !isSingleLineComment)
+                if (!isMultiLineComment && !isSingleLineComment && line[i - 1] != '\\')
                     isString = (isString) ? false : true;
             }
 
@@ -254,6 +246,7 @@ void FileReader::readFile()
         // Assume line is a valid line if not inside a multi-line comment
         if (!isSingleLineComment && !isMultiLineComment)
             total++;
+            
 
         if (multiLineEnd)
         {
@@ -286,7 +279,6 @@ void FileReader::closeFile()
  * True: el archivo fue abierto exitosamente
  * False: el archivo no fue abierto porque no existe
 */
-//.i
 //.b=2
 bool FileReader::getFileStatus()
 {
@@ -298,18 +290,19 @@ bool FileReader::getFileStatus()
 /*
  * Devuelve el log de errores
 */
-//.i
 //.b=2
 vector<string> FileReader::getErrorLog()
 {
     return errorLog;
 }
 
+//.i
 ClassEntry* FileReader::createClassEntry()
 {
     return new ClassEntry(className, total, items, base, deleted, modified, added);
 }
 
+//.i
 void FileReader::updateClassEntry(ClassEntry* classEntry)
 {
     classEntry->setTotal(classEntry->getTotal() + total);
@@ -322,11 +315,13 @@ void FileReader::updateClassEntry(ClassEntry* classEntry)
                                         classEntry->getDeleted() + deleted));
 }
 
+//.i
 int FileReader::calculateAdded(int t, int b, int d)
 {
     return t - b + d;
 }
 
+//.i
 void FileReader::pushError(string error)
 {
     errorLog.push_back(error);
@@ -342,6 +337,7 @@ int FileReader::getTotal()
     return total;
 }
 
+//.i
 int FileReader::parseQuantity(string line)
 {
     int pos = 0;
@@ -372,16 +368,5 @@ int FileReader::parseQuantity(string line)
     }
 
     return stoi(number);
-}
-
-void FileReader::print()
-{
-    cout << className << ": ";
-        cout << "T=" << total << ", ";
-        cout << "I=" << items << ", ";
-        cout << "B=" << base << ", ";
-        cout << "D=" << deleted << ", ";
-        cout << "M=" << modified << ", ";
-        cout << "A=" << added << endl;
 }
 #endif

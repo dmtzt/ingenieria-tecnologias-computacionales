@@ -79,6 +79,7 @@ int main(void)
     return 0;
 }
 
+//.i
 int getCategory(ClassEntry* classEntry)
 {
     if (classEntry->getBase() > 0 && (classEntry->getModified() > 0 

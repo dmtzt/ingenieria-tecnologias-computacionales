@@ -33,6 +33,7 @@ public:
     void updateCounters(int, int, int, int, int, int);
 };
 
+//.i
 ClassEntry::ClassEntry(string className, int total, int items, int base, int deleted, int modified, int added)
 {
     this->className = className;
@@ -109,6 +110,7 @@ void ClassEntry::setAdded(int added)
     this->added = added;
 }
 
+//.i
 void ClassEntry::updateCounters(int total, int items, int base, int deleted, int modified, int added)
 {
     this->total = total;

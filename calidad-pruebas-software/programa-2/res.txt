@@ -1,6 +1,8 @@
-Banco.src
-Banco.txt
-Cliente.src
-Cuenta.txt
-Lista.txt
-Nodo.src
+CLASES BASE:
+   FileReader: T=177, I=9, B=35, D=42, M=9, A=184
+--------------------------------------------
+CLASES NUEVAS:
+--------------------------------------------
+CLASES REUSADAS:
+--------------------------------------------
+Total de LDC=177
