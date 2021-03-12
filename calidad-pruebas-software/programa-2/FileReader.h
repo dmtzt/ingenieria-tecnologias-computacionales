@@ -9,17 +9,20 @@
  * Fecha de creación: 22/feb/2021
  * Fecha de modificación: 23/feb/2021
 */
+//.b=2
 #ifndef FILEREADER_H
 #define FILEREADER_H
 #define INVALID_QUANTITY 0
-#include <cctype>
+//.b=4
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <cctype>
 #include "ClassCategories.h"
 #include "ClassEntry.h"
 
+//.b=5
 using namespace std;
 
 class FileReader 
@@ -28,11 +31,13 @@ class FileReader
     string line;
     vector<string> errorLog;
 
-    //.d=6
+    //.d=3
     bool fileStatus;
-    bool isSingleLineComment;
+    //.d=1
+    bool isSingleLineComment; //.m
     bool multiLineStart;
     bool multiLineEnd;
+    //.b=1
     bool isMultiLineComment;
     bool isString;
 
@@ -49,7 +54,8 @@ class FileReader
     int parseQuantity(string);
 
     public:
-        void reset();
+        void reset(); //.m
+        //.b=4
         void openFile(string);
         void readFile();
         void closeFile();
@@ -58,6 +64,7 @@ class FileReader
         ClassEntry* createClassEntry();
         void updateClassEntry(ClassEntry*);
         int calculateAdded(int, int, int);
+        void pushError(string);
         string getClassName();
         int getTotal();
         int getItems();
@@ -66,15 +73,12 @@ class FileReader
         int getModified();
         int getAdded();
         void print();
+        //.b=1
         vector<string> getErrorLog();
 };
 
-/*
- * Inicializa los contadores en 0 y las banderas en false 
-*/
 //.i
-//.m
-void FileReader::reset()
+void FileReader::reset() //.m
 {
     //.d=3
     className = "";
@@ -96,20 +100,20 @@ void FileReader::reset()
 */
 
 //.i
+//.b=1
 void FileReader::openFile(string fileName)
 {
     this->fileName = fileName;
     // Get class name from the given file name
     className = fileName.substr(0, fileName.find('.'));
-    //.m
-    file.open(fileName);
-    //.b=5
+    file.open(fileName); //.m
+    //.b=4
     if (file)
         fileStatus = true;
     else
     {
         fileStatus = false;
-        errorLog.push_back("El archivo no existe");
+        pushError("El archivo " + fileName + " no existe"); //.m
     }    
 }
 
@@ -121,142 +125,157 @@ void FileReader::openFile(string fileName)
  * multilínea sin terminar
 */
 //.i
+//.b=1
 void FileReader::readFile()
 {
-    //.b=3
+    if (!fileStatus)
+        return;
+    
     // File is empty: update error log
+    //.b=1
     if (file.peek() == std::ifstream::traits_type::eof())
     {
-        errorLog.push_back("El archivo " + fileName + " está vacío");
-        cout << "VACIO" << endl;
+        pushError("El archivo " + fileName + " está vacío"); //.m
+        return;
     }
         
     // File is not empty
-    else
+    // Ready line by line
+    //.b=1
+    while (!file.eof())
     {
-        // Ready line by line
-        while (!file.eof())
+        // Assume line is not a single-line comment
+        isSingleLineComment = false;
+        // Read line
+        //.b=1
+        getline(file, line);
+
+        //.d=5
+        // If line has at least one character
+        if (line.length() > 0)
         {
-            // Assume line is not a single-line comment
-            isSingleLineComment = false;
-            // Read line
-            getline(file, line);
-
-            // If line has at least one character
-            if (line.length() > 0)
-            {
-                // Remove all spaces and tabs from indentation
-                while(line[0] == ' ' || line[0] == '\t')
-                    line.erase(line.begin());
-            }
-
-            // Exclude line if it is empty after indentation removal
-            if (line.empty())
-                continue;
-
-            // Remove all consecutive spaces and tabs remaining
-            while(line[1] == ' ' || line[1] == '\t')
+            // Remove all spaces and tabs from indentation
+            while(line[0] == ' ' || line[0] == '\t')
                 line.erase(line.begin());
-            
-            // Exclude if it only has "{", "}" or "};"
-            if ((line.length() == 1 && (line[0] == '{' || line[0] == '}'))
-                || (line.length() == 2 && line[0] == '}' && line[1] == ';'))
-                continue;
-                
-            //.d=1
-            //.m
-            // Find single and multi-line comments and counting identifiers
-            for (int i = 0; i < line.length(); i++)
-            {
-                if (line[i] == '/' && line.length() > i + 1)
-                {
-                    // Line is the start of a multi-line comment
-                    if (line[i + 1] == '*') //.m
-                        multiLineStart = true;
-                    // Line is a single-line comment and is not inside a multi-line comment or a string
-                    else if (line[i + 1] == '/' && !isMultiLineComment && !isString) //.m
-                    {
-                        isSingleLineComment = (i + 1 > 1) ? false : true;
-                        //.d=1
-                        // Check if line contains an identifier 
-                        if (line.length() > i + 2) //.m
-                        {
-                            if (line[i + 2] == '.' && line.length() > i + 3)
-                            {
-                                // Check if it is an alphabetic identifier
-                                if (isalpha(line[i + 3]))
-                                {
-                                    // Update counters according to valid identifiers
-                                    switch (tolower(line[i + 3]))
-                                    {
-                                        case 'i':
-                                            items++;
-                                            break;
-                                        case 'b':
-                                            base += parseQuantity(line.substr(i + 4));
-                                            break;
-                                        case 'd':
-                                            deleted += parseQuantity(line.substr(i + 4));
-                                            break;
-                                        case 'm':
-                                            modified++;
-                                            break;
-                                        // Undefined identifier
-                                        default:
-                                            errorLog.push_back("Identificador no definido: //." + to_string(line[i + 3]));
-                                            break;
-                                    }
-                                    //break;
-                                }
-                                // Undefined identifier
-                                else
-                                {
-                                    errorLog.push_back("Identificador no definido: //." + to_string(line[i + 3]));
-                                    break;
-                                }  
-                            }
-                        }
-                    }
-                    //.d=3
-                }
-                else if (line[i] == '*' && line.length() > i + 1)
-                {
-                    // Line is the end of a multi-line comment
-                    if (line[i + 1] == '/')
-                        multiLineEnd = true;
-                        
-                    //.d=3
-                }
-                // Current read is inside a string
-                else if (line[i] == '\"')
-                {
-                    if (!isMultiLineComment && !isSingleLineComment)
-                        isString = (isString) ? false : true;
-                }
-
-                if (multiLineStart && !isMultiLineComment)
-                    isMultiLineComment = true;
-            }
-
-            // Assume line is a valid line if not inside a multi-line comment
-            if (!isSingleLineComment && !isMultiLineComment)
-                total++;
-
-            if (multiLineEnd)
-            {
-                isMultiLineComment = false;
-                multiLineStart = false;
-                multiLineEnd = false;
-            }
         }
 
-        added = calculateAdded(total, base, deleted);
+        // Exclude line if it is empty after indentation removal
+        if (line.empty())
+            continue;
+
+        // Remove all consecutive spaces and tabs remaining
+        while(line[1] == ' ' || line[1] == '\t')
+            line.erase(line.begin());
+        
+        // Exclude if it only has "{", "}" or "};"
+        if ((line.length() == 1 && (line[0] == '{' || line[0] == '}'))
+            || (line.length() == 2 && line[0] == '}' && line[1] == ';'))
+            continue;
+            
+        //.b=1
+        // Find single and multi-line comments and counting identifiers
+        for (int i = 0; i < line.length(); i++)
+        {
+            if (line[i] == '/' && line.length() > i + 1) //.m
+            {
+                // Line is the start of a multi-line comment
+                //.b=1
+                if (line[i + 1] == '*')
+                    multiLineStart = true;
+                //.d=4
+                // Line is a single-line comment and is not inside a multi-line comment or a string
+                else if (line[i + 1] == '/' && !isMultiLineComment && !isString) //.m
+                {
+                    isSingleLineComment = (i + 1 > 1) ? false : true;
+                    //.d=1
+                    // Check if line contains an identifier 
+                    if (line.length() > i + 2)
+                    {
+                        if (line[i + 2] == '.' && line.length() > i + 3)
+                        {
+                            // Check if it is an alphabetic identifier
+                            if (isalpha(line[i + 3]))
+                            {
+                                // Update counters according to valid identifiers
+                                switch (tolower(line[i + 3]))
+                                {
+                                    case 'i':
+                                        items++;
+                                        break;
+                                    case 'b':
+                                        base += parseQuantity(line.substr(i + 4));
+                                        break;
+                                    case 'd':
+                                        deleted += parseQuantity(line.substr(i + 4));
+                                        break;
+                                    case 'm':
+                                        modified++;
+                                        break;
+                                    // Undefined identifier
+                                    default:
+                                        string s(1, line[i + 3]);
+                                        pushError("Identificador no válido: //." + s);
+                                        break;
+                                }
+                                //break;
+                            }
+                            // Undefined identifier
+                            else
+                            {
+                                string s(1, line[i + 3]);
+                                pushError("Identificador no válido: //." + s);
+                                break;
+                            }  
+                        }
+                    }
+                }
+                //.d=3
+            }
+            else if (line[i] == '*' && line.length() > i + 1) //.m
+            {
+                // Line is the end of a multi-line comment
+                //.b=1
+                if (line[i + 1] == '/')
+                    multiLineEnd = true;
+                    
+                //.d=4
+            }
+            // Current read is inside a string
+            else if (line[i] == '\"')
+            {
+                if (!isMultiLineComment && !isSingleLineComment)
+                    isString = (isString) ? false : true;
+            }
+
+            if (multiLineStart && !isMultiLineComment)
+                isMultiLineComment = true;
+        }
+
+        // Assume line is a valid line if not inside a multi-line comment
+        if (!isSingleLineComment && !isMultiLineComment)
+            total++;
+
+        if (multiLineEnd)
+        {
+            isMultiLineComment = false;
+            multiLineStart = false;
+            multiLineEnd = false;
+        }
+
+        //.d=9
     }
+
+    added = calculateAdded(total, base, deleted);
+
+    if (total == 0)
+        pushError("El archivo " + fileName + " no contiene líneas de código");
 }
 
 /*
  * Cierra el archivo anteriormente abierto
 */
+//.i
+//.b=2
 void FileReader::closeFile()
 {
     file.close();
@@ -267,6 +286,8 @@ void FileReader::closeFile()
  * True: el archivo fue abierto exitosamente
  * False: el archivo no fue abierto porque no existe
 */
+//.i
+//.b=2
 bool FileReader::getFileStatus()
 {
     return fileStatus;
@@ -277,6 +298,8 @@ bool FileReader::getFileStatus()
 /*
  * Devuelve el log de errores
 */
+//.i
+//.b=2
 vector<string> FileReader::getErrorLog()
 {
     return errorLog;
@@ -302,6 +325,11 @@ void FileReader::updateClassEntry(ClassEntry* classEntry)
 int FileReader::calculateAdded(int t, int b, int d)
 {
     return t - b + d;
+}
+
+void FileReader::pushError(string error)
+{
+    errorLog.push_back(error);
 }
 
 string FileReader::getClassName()
@@ -338,7 +366,7 @@ int FileReader::parseQuantity(string line)
     {
         if (!isdigit(number[i]))
         {
-            errorLog.push_back("Invalid quantity found");
+            pushError("Invalid quantity found");
             return INVALID_QUANTITY;
         }
     }

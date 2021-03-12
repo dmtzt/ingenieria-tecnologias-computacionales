@@ -1,7 +1,11 @@
 CLASES BASE:
+TestE4: T=42, I=4, B=65, D=35, M=3, A=12
 --------------------------------------------
 CLASES NUEVAS:
 --------------------------------------------
 CLASES REUSADAS:
 --------------------------------------------
-Total de LDC=0
+Total de LDC=42
+Identificador no válido: //.x
+Identificador no válido: //.y
+Identificador no válido: //.z

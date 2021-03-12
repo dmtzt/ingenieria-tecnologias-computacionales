@@ -1,40 +1,38 @@
-/*
- * Recibe el número de líneas de cada categoría y los imprime con el formato correspondiente
- * 
+/* 
  * David Alejandro Martínez Tristán A01610267
- * Fecha de creación: 22/feb/2021
- * Fecha de modificación: 23/feb/2021
+ * Fecha de creación: 07/03/2021
+ * Fecha de modificación: 11/03/2021
 */
+//.b=2
 #ifndef PRINTER_H
 #define PRINTER_H
 #define OUTPUT_FILE_NAME "ConteoLDC.txt"
-#include <fstream>
+//.b=3
 #include <iostream>
-#include <queue>
-#include <string>
 #include <vector>
+#include <string>
+#include <queue>
+#include <fstream>
 #include "ClassEntry.h"
 
+//.b=1
 using namespace std;
 
-//.b=3
+//.b=1
 class Printer
 {
     ofstream file;
+    //.b=2
     public:
         void printStats(queue<ClassEntry*>, queue<ClassEntry*>, queue<ClassEntry*>, int, vector<string>);
 };
 
-/*
- * Imprime el número de líneas vacías, con comentarios y con código, así como el log de 
- * errores, con el formato correspondiente
-*/
 //.i
-//.m=2
 void Printer::printStats(queue<ClassEntry*> baseClasses, 
     queue<ClassEntry*> newClasses, queue<ClassEntry*> reusedClasses, int totalGlobal, 
-    vector<string> errorLog)
+    vector<string> errorLog) //.m
 {
+    //.d=9
     file.open(OUTPUT_FILE_NAME);
     file << "CLASES BASE:" << endl;
     ClassEntry* classEntry = NULL;
@@ -98,11 +96,10 @@ void Printer::printStats(queue<ClassEntry*> baseClasses,
     file << "--------------------------------------------" << endl;
     file << "Total de LDC=" << totalGlobal << endl;
 
-    cout << errorLog.size() << endl;
-
     for (int i = 0; i < errorLog.size(); i++)
-        cout << errorLog[i] << endl;
+        file << errorLog[i] << endl;
 
     file.close();
 }
+//.b=1
 #endif

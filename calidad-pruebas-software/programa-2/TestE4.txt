@@ -1,0 +1,63 @@
+linea;
+linea;
+linea;
+		        
+class TestE4
+		
+	linea;
+	linea;
+	//.b=15		
+	//.i
+		linea;
+		linea;
+  
+		//.d=1
+    //.x
+		linea;
+		linea;
+		linea;
+		linea;
+		linea;
+
+	//.i
+		linea;   //.m  
+		//.b=50
+		linea;
+		linea;
+		linea;
+
+		//.d=33
+    
+		linea;
+		linea;
+		linea;//.m	
+		linea;
+		linea;
+    //.y
+		linea;
+		linea;
+		linea;
+		linea;
+		linea;
+
+	//.i
+		linea;
+	
+	//.i
+		linea;
+		linea;
+		linea;
+		linea;
+		linea;
+
+		//.d=1
+        //.z
+		linea;
+		linea;
+		linea;//.m
+		linea;
+		linea;
+		linea;
+		linea;
+		linea;
+		linea;

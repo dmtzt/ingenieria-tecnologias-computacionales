@@ -1,17 +1,21 @@
 #include <map>
 #include <queue>
 #include <string>
+//.d=1
 #include "FileReader.h"
+#include "Printer.h"
+//.d=1
 #include "ClassEntry.h"
 #include "ClassCategories.h"
-#include "Printer.h"
 
+//.b=1
 using namespace std;
 
 int getCategory(ClassEntry* classEntry);
 
 int main(void)
 {
+    string fileName; //.m
     //.b=2
     FileReader fileReader;
     Printer printer;
@@ -19,22 +23,17 @@ int main(void)
     queue<ClassEntry*> baseClasses;
     queue<ClassEntry*> newClasses;
     queue<ClassEntry*> reusedClasses;
-    //.m
-    string fileName;
     int totalGlobal = 0;
 
-    //.m
-    fileReader.reset();
+    fileReader.reset(); //.m
 
-    //.m
-    getline(cin, fileName);
+    getline(cin, fileName); //.m
 
-    //.m
     while (!fileName.empty())
     {
-        //.m
-        fileReader.openFile(fileName);
+        fileReader.openFile(fileName); //.m
 
+        //.b=2
         if (fileReader.getFileStatus())
         {
             fileReader.readFile();
@@ -48,13 +47,9 @@ int main(void)
             else
                 fileReader.updateClassEntry(globalClasses[fileReader.getClassName()]);
                 
-
+            //.b=1
             fileReader.closeFile();
             fileReader.reset();
-        }
-        else
-        {
-
         }
 
         getline(cin, fileName);
@@ -74,14 +69,13 @@ int main(void)
                 reusedClasses.push(it->second);
                 break;
             default:
-                cout << "INVALID CLASS" << endl;
                 break;
         }
     }
 
     globalClasses.clear();
 
-    printer.printStats(baseClasses, newClasses, reusedClasses, totalGlobal, fileReader.getErrorLog());
+    printer.printStats(baseClasses, newClasses, reusedClasses, totalGlobal, fileReader.getErrorLog()); //.m
     return 0;
 }
 
