@@ -1,3 +1,14 @@
+/*
+ * Programa principal
+ * 1. Lee de la consola el nombre de uno o más archivos con código fuente que compila exitosamente
+ * 2. Calcula el número de items
+ * 3. Calcula el número de LDC totales, base, borradas, modificadas y agregadas
+ * 4. Clasifica cada clase en base, nueva o reusada según sus registros
+ * 5. Imprime los resultados en consola y en un archivo de texto
+ * 
+ * David Alejandro Martínez Tristán A01610267
+ * Fecha de modificación: 12/03/2021
+ */
 #include <map>
 #include <queue>
 #include <string>
@@ -15,6 +26,7 @@ int getCategory(ClassEntry* classEntry);
 
 int main(void)
 {
+    //.b=1
     string fileName; //.m
     //.b=2
     FileReader fileReader;
@@ -25,12 +37,14 @@ int main(void)
     queue<ClassEntry*> reusedClasses;
     int totalGlobal = 0;
 
+    //.b=2
     fileReader.reset(); //.m
 
     getline(cin, fileName); //.m
 
     while (!fileName.empty())
     {
+        //.b=1
         fileReader.openFile(fileName); //.m
 
         //.b=2
@@ -55,6 +69,10 @@ int main(void)
         getline(cin, fileName);
     }
 
+    //.b=6
+    //.d=6
+
+    // Add each class to its corresponding category
     for (map<string, ClassEntry*>::iterator it = globalClasses.begin(); it != globalClasses.end(); it++)
     {
         switch (getCategory(it->second))
@@ -73,11 +91,20 @@ int main(void)
         }
     }
 
+    // Clear the map after all its data has been copied to the three categories
     globalClasses.clear();
 
+    // Print the statistics for all classes
+    //.b=1
     printer.printStats(baseClasses, newClasses, reusedClasses, totalGlobal, fileReader.getErrorLog()); //.m
     return 0;
 }
+
+/*
+ * Define la categoría de cada clase según los criterios definidos en los requerimientos del programa
+ * Devuelve la categoría como constante entera, valor que será utilizado para asignar el registro
+ * de cada clase a su estructura correspondiente
+ */
 
 //.i
 int getCategory(ClassEntry* classEntry)

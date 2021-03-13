@@ -1,3 +1,13 @@
+/*
+ * 1. Lee un archivo de código fuente que compila exitosamente
+ * 2. Cuenta las líneas de código (LDC)
+ * 3. Utilizando las reglas de conteo descritas en el estándar de contabilización,calcula 
+ * la cantidad de items, las LDC base, borradas, modificadas y agregadas
+ * 
+ * David Alejandro Martínez Tristán A01610267
+ * Fecha de modificación: 12/03/2021
+ */
+
 //.b=2
 #ifndef FILEREADER_H
 #define FILEREADER_H
@@ -20,12 +30,15 @@ class FileReader
     string line;
     vector<string> errorLog;
 
+    //.b=3
     //.d=3
     bool fileStatus;
+    //.b=1
     //.d=1
     bool isSingleLineComment; //.m
     bool multiLineStart;
     bool multiLineEnd;
+    //.b=1
     //.b=1
     bool isMultiLineComment;
     bool isString;
@@ -43,12 +56,14 @@ class FileReader
     int parseQuantity(string);
 
     public:
+        //.b=1
         void reset(); //.m
         //.b=4
         void openFile(string);
         void readFile();
         void closeFile();
         bool getFileStatus();
+        //.b=3
         //.d=3
         ClassEntry* createClassEntry();
         void updateClassEntry(ClassEntry*);
@@ -65,10 +80,16 @@ class FileReader
         vector<string> getErrorLog();
 };
 
+/*
+ * Reinicia todas las variables de la clase
+ * Utilizada cada que se lee un nuevo archivo
+*/
 //.i
+//.b=1
 void FileReader::reset() //.m
 {
     //.d=3
+    //.b=3
     className = "";
     fileStatus = false;
     isSingleLineComment = false;
@@ -79,13 +100,6 @@ void FileReader::reset() //.m
     category = INVALID_CLASS;
     total = items = base = deleted = modified = added = 0;
 }
-
-/*
- * Abre el archivo y actualizar la bandera de status
- * Si el archivo pudo abrirse, la bandera se actualiza a true, lo cual servirá de
- * indicación para proceder a leer el archivo
- * De otra manera, significa que el archivo no existe
-*/
 
 //.i
 //.b=1
@@ -101,21 +115,24 @@ void FileReader::openFile(string fileName)
     else
     {
         fileStatus = false;
+        //.b=1
         pushError("El archivo " + fileName + " no existe"); //.m
     }    
 }
 
 /*
- * Lee el archivo previamente abierto y cuenta el número de líneas el blanco y que 
- * contienen código o comentarios
- * 
- * Contempla los casos en los que el archivo está vacío o contiene un comentario
- * multilínea sin terminar
-*/
+ * Cuenta el total de LDC
+ * Calcula las LDC base, borradas, modificadas y agregadas
+ * Omite líneas de código vacías, o que incluyan "{",  "}" o "};"
+ * Excepciones consideradas:
+ * 1. Etiquetas de conteo no válidas
+ * 2. Archivo no vacío pero sin líneas de código
+ */
 //.i
 //.b=1
 void FileReader::readFile()
 {
+    //.b=2
     if (!fileStatus)
         return;
     
@@ -123,6 +140,7 @@ void FileReader::readFile()
     //.b=1
     if (file.peek() == std::ifstream::traits_type::eof())
     {
+        //.b=1
         pushError("El archivo " + fileName + " está vacío"); //.m
         return;
     }
@@ -139,6 +157,7 @@ void FileReader::readFile()
         getline(file, line);
 
         //.d=5
+        //.b=5
         // If line has at least one character
         if (line.length() > 0)
         {
@@ -164,22 +183,26 @@ void FileReader::readFile()
         // Find single and multi-line comments and counting identifiers
         for (int i = 0; i < line.length(); i++)
         {
+            //.b=1
             if (line[i] == '/' && line.length() > i + 1) //.m
             {
                 // Line is the start of a multi-line comment
                 //.b=1
                 if (line[i + 1] == '*')
                     multiLineStart = true;
-                    
+                
+                //.b=4
                 //.d=4
                 // Line is a single-line comment and is not inside a multi-line comment or a string
                 else if (line[i + 1] == '/' && !isMultiLineComment && !isString) //.m
                 {
                     isSingleLineComment = (i + 1 > 1) ? false : true;
+                    //.b=1
                     //.d=1
                     // Check if line contains an identifier 
                     if (line.length() > i + 2)
                     {
+                        //.b=2
                         if (line[i + 2] == '.' && line.length() > i + 3)
                         {
                             // Check if it is an alphabetic identifier
@@ -218,6 +241,7 @@ void FileReader::readFile()
                         }
                     }
                 }
+                //.b=3
                 //.d=3
             }
             else if (line[i] == '*' && line.length() > i + 1) //.m
@@ -229,7 +253,7 @@ void FileReader::readFile()
                     multiLineEnd = true;
                 }
                     
-                    
+                //.b=4
                 //.d=4
             }
             // Current read is inside a string
@@ -239,6 +263,7 @@ void FileReader::readFile()
                     isString = (isString) ? false : true;
             }
 
+            //.b=2
             if (multiLineStart && !isMultiLineComment)
                 isMultiLineComment = true;
         }
@@ -247,7 +272,7 @@ void FileReader::readFile()
         if (!isSingleLineComment && !isMultiLineComment)
             total++;
             
-
+        // End of multi-line comment
         if (multiLineEnd)
         {
             isMultiLineComment = false;
@@ -255,11 +280,14 @@ void FileReader::readFile()
             multiLineEnd = false;
         }
 
+        //.b=9
         //.d=9
     }
 
+    // Calculate added
     added = calculateAdded(total, base, deleted);
 
+    //.b=2
     if (total == 0)
         pushError("El archivo " + fileName + " no contiene líneas de código");
 }
@@ -285,6 +313,7 @@ bool FileReader::getFileStatus()
     return fileStatus;
 }
 
+//.b=6
 //.d=6
 
 /*
@@ -296,12 +325,20 @@ vector<string> FileReader::getErrorLog()
     return errorLog;
 }
 
+/*
+ * Crea una instancia de ClassEntry para almacenar los datos calculados durante la lectura
+ * Devuelve la referencia al espacio de memoria creado
+ */
 //.i
 ClassEntry* FileReader::createClassEntry()
 {
     return new ClassEntry(className, total, items, base, deleted, modified, added);
 }
 
+/*
+ * Actualiza una instancia existente de ClassEntry cuando se ha encontrado un nuevo archivo
+ * de una clase anteriormente registrada
+ */
 //.i
 void FileReader::updateClassEntry(ClassEntry* classEntry)
 {
@@ -315,29 +352,47 @@ void FileReader::updateClassEntry(ClassEntry* classEntry)
                                         classEntry->getDeleted() + deleted));
 }
 
+/*
+ * Calcula el número de LDC agregadas a partir del número de LDC totales, base y eliminadas
+ */
 //.i
 int FileReader::calculateAdded(int t, int b, int d)
 {
     return t - b + d;
 }
 
+/*
+ * Agrega un error al log de errores
+ */
 //.i
 void FileReader::pushError(string error)
 {
     errorLog.push_back(error);
 }
 
+/*
+ * Devuelve el nombre de la clase
+ */
 string FileReader::getClassName()
 {
     return className;
 }
 
+/*
+ * Devuelve el número de LDC totales
+ */
 int FileReader::getTotal()
 {
     return total;
 }
 
+//.b=3
+//.d=3
+
 //.i
+/*
+ * Extrae el número de líneas a partir de una etiqueta de LDC base o eliminadas
+ */
 int FileReader::parseQuantity(string line)
 {
     int pos = 0;
