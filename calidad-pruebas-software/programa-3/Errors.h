@@ -1,4 +1,10 @@
-
+/*
+ * Especificación de todos los posibles errores identificados durante la ejecución
+ * normal del programa
+ * 
+ * David Alejandro Martínez Tristán A01610267
+ * Fecha de modificación: 20/03/2021
+ */
 #ifndef ERRORS_H
 #define ERRORS_H
 #define INVALID_OPERATION 0

@@ -2,6 +2,7 @@
  * 1. Imprime el valor de la regresión lineal y sus parámetros, siguiendo el formato 
  * especificado en los requerimientos del programa
  * 2. Imprime mensajes según los errores encontrados durante la ejecución del programa
+ * 
  * David Alejandro Martínez Tristán A01610267
  * Fecha de modificación: 20/03/2021
  */
@@ -26,8 +27,10 @@ class Printer
 };
 
 /*
- * Imprime el valor de la regresión lineal y sus parámetros, siguiendo el formato 
+ * 1. Imprime el valor de la regresión lineal y sus parámetros, siguiendo el formato 
  * especificado en los requerimientos del programa
+ * 2. Imprime mensajes según los errores encontrados durante la ejecución del programa
+ * Hay un mensaje definido para cada error especificado
  */
 //.d=2
 //.i
