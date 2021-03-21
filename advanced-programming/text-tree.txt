@@ -1,0 +1,22 @@
+TODO:
+    Read word by word
+    Turn all letters to lowercase
+
+    Insert:
+        Compare letter by letter while the two are the same
+        If a difference is found:
+            If letter from new word < letter from current word (a < b):
+                Compare with word to the left start to end
+            If letter from new word > letter from current word (c > b):
+                Compare with word to the right start to end
+        If there is an exact match:
+            If current word is longer:
+                Insert new word to the left
+            If new word is longer:
+                Insert new word to the right
+            If both words have the same length:
+                Update number of occurences
+        
+Test cases:
+    Current word is longer
+    New word is longer
