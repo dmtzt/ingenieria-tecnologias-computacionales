@@ -1,0 +1,6 @@
+Errores:
+    ERROR_X_NOT_NUM: x no es un número
+    ERROR_X_LESS_THAN_ZERO: x no es un número mayor o igual a 0
+    ERROR_DOF_NOT_NUM: dof no es un número
+    ERROR_DOF_NOT_INT: dof no es un número entero
+    ERROR_DOF_LESS_THAN_EQUAL_TO_ZERO: dof no es un número mayor a 0
