@@ -1,11 +1,12 @@
 /*
- * 1. Imprime el valor de la regresión lineal y sus parámetros, siguiendo el formato 
- * especificado en los requerimientos del programa
+ * Printer
+ * 1. Imprime los valores de x, dof, p con el formato especificado
  * 2. Imprime mensajes según los errores encontrados durante la ejecución del programa
  * 
  * David Alejandro Martínez Tristán A01610267
- * Fecha de modificación: 20/03/2021
+ * Fecha de modificación: 29/03/2021
  */
+//.b=51
 #ifndef PRINTER_H
 #define PRINTER_H
 #include <iostream>
@@ -21,28 +22,27 @@ class Printer
     string ceilDecimals(double);
     public:
         void printStats(double, int, double, vector<int>); //.m
-    //.d=1
 };
 
 /*
- * 1. Imprime el valor de la regresión lineal y sus parámetros, siguiendo el formato 
- * especificado en los requerimientos del programa
+ * Impresión de resultados
+ * 1. Imprime los valores de x, dof, p con el formato especificado
  * 2. Imprime mensajes según los errores encontrados durante la ejecución del programa
- * Hay un mensaje definido para cada error especificado
+ *    Cada error definido para el programa posee un mensaje asociado
  */
 //.i
 void Printer::printStats(double x, int dof, double p, vector<int> errorLog) //.m
 {
     //.d=8
-
     cout << "  x: " << ceilDecimals(x) << endl;
     cout << "dof: " << dof << endl;
     cout << "  p: " << ceilDecimals(p) << endl;
 
     for (int i = 0; i < errorLog.size(); i++)
     {
-        switch (errorLog[i]) //.m
+        switch (errorLog[i])
         {
+            //.d=27
             case ERROR_X_NOT_NUM:
                 cout << "El valor de x no es un número" << endl;
                 break;
@@ -64,6 +64,13 @@ void Printer::printStats(double x, int dof, double p, vector<int> errorLog) //.m
     }
 }
 
+/*
+ * Función auxiliar para desplegar un número real con 5 decimales
+ * El 5o dígito es redondeado cuando el 6o es mayor o igual a 5
+ * Recibe un número como double
+ * Devuelve el número formateado en string
+ */
+//.i
 string Printer::ceilDecimals(double d)
 {
     d *= 100000;
@@ -78,7 +85,9 @@ string Printer::ceilDecimals(double d)
 
     d /= 100000;
 
+    // The double-string conversion keeps only 6 decimals
     string s = to_string(d);    
+    // Remove the 6th decimal, keep only 5
     s.erase(s.size() - 1);
     return s;
 }

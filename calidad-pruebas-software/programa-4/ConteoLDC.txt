@@ -1,0 +1,11 @@
+CLASES BASE:
+   Errors: T=8, I=0, B=13, D=10, M=0, A=5
+   Printer: T=47, I=2, B=51, D=35, M=2, A=31
+   programa-4: T=55, I=2, B=17, D=10, M=1, A=48
+--------------------------------------------
+CLASES NUEVAS:
+   NumericalMethods: T=59, I=3
+--------------------------------------------
+CLASES REUSADAS:
+--------------------------------------------
+Total de LDC=169

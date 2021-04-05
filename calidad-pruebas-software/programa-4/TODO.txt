@@ -4,3 +4,47 @@ Errores:
     ERROR_DOF_NOT_NUM: dof no es un número
     ERROR_DOF_NOT_INT: dof no es un número entero
     ERROR_DOF_LESS_THAN_EQUAL_TO_ZERO: dof no es un número mayor a 0
+
+TODO:
+Leer x
+Verificar que x es un número
+Si x es un número:
+    Verificar que x sea un número mayor o igual a 0
+    Si x es mayor o igual a 0:
+        Leer dof
+        Verificar que dof es un número
+        Si dof es un número:
+            Verificar que sea un número entero
+            Si dof no es un número entero:
+                Truncar decimales y tratar como número entero
+            Verificar que sea un número positivo
+            Si dof es un número positivo:
+                Calcular distribución t con método de Simpson
+                Imprimir resultados de x, dof y p con el formato establecido
+            Si dof no es un número positivo o es 0:
+                Terminar programa
+        Si dof no es un número:
+            Terminar programa
+    Si x no es mayor o igual a 0:
+        Terminar programa
+Si x no es un número:
+    Terminar programa
+    
+
+Método de Simpson:
+Definir número inicial de segmentos
+Calcular ancho de cada segmento
+Calcular el valor para los segmentos inicial y final
+Calcular el valor para los segmentos intermedios
+Si el número de segmento es par:
+    Multiplicar por 2 y agregar a la sumatoria de pares
+Si el número de segmento es impar:
+    Multiplicar por 4 y agregar a la sumatoria de impares
+Calcular la distribución con los valores inicial, final e intermedios
+Repetir cálculo de valores intermedios con el doble de segmentos
+Calcular diferencia absoluta entre distribución actual y distribución anterior
+Si la diferencia es mayor que el error máximo definido:
+    Repetir cálculo de valores intermedios con el doble de segmentos
+    Calcular diferencia absoluta entre distribución actual y distribución anterior
+Si la diferencia es igual o menor que el error máximo definido:
+    Terminar y devolver valor aproximado de la distribución

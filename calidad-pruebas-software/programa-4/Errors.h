@@ -3,8 +3,9 @@
  * normal del programa
  * 
  * David Alejandro Martínez Tristán A01610267
- * Fecha de modificación: 20/03/2021
+ * Fecha de modificación: 29/03/2021
  */
+//.b=13
 #ifndef ERRORS_H
 #define ERRORS_H
 //.d=10

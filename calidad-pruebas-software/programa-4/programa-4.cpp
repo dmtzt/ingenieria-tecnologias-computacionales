@@ -1,12 +1,23 @@
 /*
- * 1. Calcula una regresión lineal a partir de un conjunto de datos extraídos de un archivo dado
- * 2. Aplica dicha regresión para utilizar el método PROBE A, el cual es usado para realizar
- * predicciones de tamaño y tiempo de elaboración de código con base en datos históricos
- * 3. Imprime el número de datos, los valores de la ecuación de la regresión lineal, la
- * correlación y cualquier error encontrado durante el proceso
+ * Programa 4
  * 
+ * Calcula la distribución t de 0 a x con dof grados de libertad p = t(x, dof), 
+ * utilizando el método de Simpson para calcular la integral de 0 a x,
+ * con un error máximo de 0.0001
+ *
+ * Recibe dos datos:
+ *  x: número real mayor o igual a cero
+ *  dof: número entero mayor a cero
+ *
+ * Maneja los siguientes casos de error:
+ *  x no es un valor numérico
+ *  x es menor a cero
+ *  dof no es un valor numérico
+ *  dof es menor o igual a cero
+ *  dof no es un entero
+ *
  * David Alejandro Martínez Tristán A01610267
- * Fecha de modificación: 20/03/2021
+ * Fecha de modificación: 29/03/2021
  */
 //.b=17
 #include <cctype>
@@ -23,8 +34,8 @@ using namespace std;
 
 bool isNum(string stream);
 bool isInt(double d);
-double ceilDecimals(double d);
 
+//.i
 int main(void)
 {
     //.d=4
@@ -37,56 +48,80 @@ int main(void)
     double p = DEFAULT_VALUE;
     bool inputErrorFound = false;
 
+    // Read first line of data
     getline(cin, stream);
+    // If the line contains a real number
     if (isNum(stream))
     {
+        // Read number and store in x
         stringstream(stream) >> x;
 
+        // If x is negative
         if (x < 0)
         {
+            // Add error and stop normal flow of execution
             errorLog.push_back(ERROR_X_LESS_THAN_ZERO);
             inputErrorFound = true;
         }
+        // If x is positive or zero
         else
         {
+            // Read second line of data
             getline(cin, stream);
+            // If the line contains a real number
             if (isNum(stream))
             {
+                // Read number and store in dof
                 stringstream(stream) >> dof;
 
+                // If dof is not integer, add error
                 if (!isInt(dof))
                     errorLog.push_back(ERROR_DOF_NOT_INT);
 
                 // Truncate all decimals to treat value as integer
                 dof = (int) dof;
 
+                // If dof is negative or zero
                 if (dof <= 0)
                 {
+                    // Add error and stop normal flow of execution
                     errorLog.push_back(ERROR_DOF_LESS_THAN_EQUAL_TO_ZERO);
                     inputErrorFound = true;
                 }
             }
+            // Line does not contain a real number
             else
             {
+                // Add error and stop normal flow of execution
                 errorLog.push_back(ERROR_DOF_NOT_NUM);
                 inputErrorFound = true;
             }
         }
     }
+    // Line does not contain a real number
     else
     {
         errorLog.push_back(ERROR_X_NOT_NUM);
         inputErrorFound = true;
     }
             
+    // The normal flow of execution was not interrupted
+    // Calculate the t distribution given the x and dof values
     if (!inputErrorFound)
         p = nm.integrationFunctionSimpson(x, dof, MAX_ERROR);
     
     //.d=6
-    // Print all statistics
+    // Print results
     printer.printStats(x, dof, p, errorLog); //.m=1 
+    return 0;
 }
 
+/*
+ * Función auxiliar para verificar si una línea contiene un número real
+ * Considera como válidos a los caracteres numéricos, '.' y '-'
+ * Cualquier otro caracter se considera como no válido
+ */
+//.i
 bool isNum(string stream)
 {
     for (char c : stream)
@@ -99,6 +134,10 @@ bool isNum(string stream)
     return true;
 }
 
+/*
+ * Función auxiliar para verificar si un número real es entero
+ */
+//.i
 bool isInt(double d)
 {
     return (d - (int) d == 0);

@@ -1,3 +1,14 @@
+/*
+ * NumericalMethods
+ * Contiene los métodos numéricos necesarios para calcular la distribución t,
+ * los cuales están definidos en la especificación del programa:
+ *  Función gamma
+ *  Distribución t para un punto x
+ *  Método de Simpson para integración de la distribución t, de 0 a x
+ *
+ * David Alejandro Martínez Tristán A01610267
+ * Fecha de modificación: 29/03/2021
+ */
 #ifndef NUMERICALMETHODS_H
 #define NUMERICALMETHODS_H
 #include <cmath>
@@ -15,8 +26,15 @@ class NumericalMethods
         double integrationFunctionSimpson(double, double, double);
 };
 
+/*
+ * Función de distribución t para un valor x, con dof grados de libertad
+ * Recibe el valor de x y los grados de libertad
+ * Regresa el valor de la distribución para x
+ */
+//.i
 double NumericalMethods::distFunctionT(double x, double dof)
 {
+    // Calculate each term separately and then perform global product and division
     double numA = gammaFunction((dof + 1) / 2);
     double numB = pow(1 + pow(x, 2) / dof, -(dof + 1) / 2);
     double denomA = sqrt(dof * PI);
@@ -25,6 +43,12 @@ double NumericalMethods::distFunctionT(double x, double dof)
     return (numA * numB) / (denomA * denomB);
 }
 
+/*
+ * Función gamma para un valor x
+ * Es utilizada para el cálculo de la distribución t
+ * Presenta recursividad para los casos en los que x no es igual a 1 o a 1/2
+ */
+//.i
 double NumericalMethods::gammaFunction(double x)
 {
     if (x == 1)
@@ -35,6 +59,15 @@ double NumericalMethods::gammaFunction(double x)
         return (x - 1) * gammaFunction(x - 1);
 }
 
+/*
+ * Aplicación del método de Simpson para calcular la distribución t desde 0 hasta un valor x
+ * 1. Calcula el valor de la integral con un número inicial de 2 segmentos
+ * 2. Calcula un nuevo valor de la integral con el doble de segmentos que el número inicial
+ * 3. Compara la diferencia absoluta entre el valor anterior y el actual de la integral
+ * 4. Si la diferencia absoluta es mayor que el error máximo, vuelve a calcular un nuevo
+ *    valor con el doble de segmentos hasta que ésta sea menor o igual que el error máximo
+ */
+//.i
 double NumericalMethods::integrationFunctionSimpson(double x, double dof, double maxError)
 {
     double numSeg;
@@ -65,9 +98,12 @@ double NumericalMethods::integrationFunctionSimpson(double x, double dof, double
             fSumOdd += 4 * fx;
     }
         
+    // Calculate the integral value
     p = (w / 3) * (fInitial + fSumOdd + fSumEven + fFinal);
 
-    // Calculate the integral value again with double the number of segments
+    // Calculate the integral value again with double the number of segments unitl the
+    // absolute difference between the current and previous values is less than or equal
+    // to the maximum error
     do
     {
         // Update number of segments
@@ -77,6 +113,7 @@ double NumericalMethods::integrationFunctionSimpson(double x, double dof, double
         // Reset values for the sums of even and odd terms
         fSumEven = fSumOdd = 0;
 
+        // Calculate the area for the intermediate segments
         for (int i = 1; i <= numSeg - 1; i++)
         {
             fx = distFunctionT(i * w, dof);
@@ -86,11 +123,14 @@ double NumericalMethods::integrationFunctionSimpson(double x, double dof, double
                 fSumOdd += 4 * fx;
         }
         
+        // Save previous integral value
         pPrev = p;
+        // Calculate the new integral value
         p = (w / 3) * (fInitial + fSumOdd + fSumEven + fFinal);
     }
     while(abs(pPrev - p) > maxError);
 
+    // Return the integral value
     return p;
 }
 #endif
