@@ -1,0 +1,22 @@
+Leer p
+Verificar que p es un número
+Si p es un número:
+    Verificar que p esté dentro del rango definido
+    Si p está dentro del rango definido:
+        Leer dof
+        Verificar que dof es un número
+        Si dof es un número:
+            Verificar que es un número positivo
+            Si dof es un número positivo:
+                Verificar que dof es un número entero
+                Si dof no es un número entero:
+                    Truncar decimales
+                Definir valor inicial de diferencial d = 0.5
+                Calcular integral con el método Simpson para x=1
+                Repetir hasta que |integralActual - integralAnterior| <= 0.00000001
+                Si integral < p:
+                    x = x + d
+                Si integral > p:
+                    x = x - d
+    Si p no está dentro del rango definido:
+        
