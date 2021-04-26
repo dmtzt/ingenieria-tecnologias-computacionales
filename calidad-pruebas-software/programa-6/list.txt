@@ -1,0 +1,5 @@
+programa-6.cpp
+FileReader.h
+Errors.h
+Printer.h
+

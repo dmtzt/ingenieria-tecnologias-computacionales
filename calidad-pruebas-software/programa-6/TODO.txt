@@ -1,0 +1,93 @@
+TODO:
+Errores:
+    ERROR_FILE_NOT_EXISTS: El archivo no existe
+    ERROR_FILE_EMPTY: El archivo está vacío
+    ERROR_XK_NOT_EXISTS: Falta el valor xk
+    ERROR_XK_NOT_NUM: El valor de xk no es un número
+    ERROR_NO_PAIRS: No hay pares ordenados
+    ERROR_VALUE_NOT_EXISTS: Falta un valor del par ordenado
+    ERROR_PAIR_VALUE_NOT_NUM: Un valor del par ordenado no es un número
+    ERROR_PAIR_VALUE_NEGATIVE: Un valor del par ordenado es un número negativo
+
+Variables:
+    xk: int
+    x: double
+    y: double
+    n: int
+    r: double
+    r2: double
+    b0: double
+    b1: double
+    sig: double
+    ran: double
+    LS: double
+    LI: double
+    xArr: vector< double>
+    yArr: vector< double>
+    xAvg: double
+    x2Avg: double
+    yAvg: double
+
+Leer nombre del archivo
+Abrir archivo
+Verificar que el archivo exista
+    Si el archivo no existe:
+        Agregar error: ERROR_FILE_NOT_EXISTS
+        Imprimir errores
+        Terminar
+Verificar que el archivo no esté vacío
+    Si el archivo está vacío:   
+        Agregar error: ERROR_FILE_EMPTY
+        Imprimir errores
+        Terminar
+Leer xk
+    Verificar que exista el valor xk
+        Si no existe el valor xk:
+            Agregar error: ERROR_XK_MISSING
+            Imprimir errores
+            Terminar
+Leer los pares ordenados x,y hasta el final del archivo
+    Verificar que existan ambos valores
+        Si no existe uno o los dos valores:
+            Agregar error: ERROR_PAIR_VALUE_MISSING
+            Omitir par ordenado
+    Verificar que los valores sean números
+            Agregar error: ERROR_PAIR_VALUE_NOT_NUM
+            Omitir par ordenado
+    Verificar que x,y sean mayores o iguales a 0
+            Agregar error: ERROR_PAIR_VALUE_NEGATIVE_NUM
+            Omitir par ordenado
+    Agregar par ordenado al vector pairs
+    Actualizar cantidad de pares ordenados n
+Calcular parámetros de regresión lineal b0, b1
+    Calcular promedio de x: xAvg
+    Calcular promedio de x2: x2Avg
+    Calcular promedio de y: yAvg
+    Calcular b1 según la fórmula establecida y con el vector de pares y los valores xAvg, yAvg
+    Calcular b0 según la fórmula establecida y con los valores xAvg, yAvg
+Calcular coeficientes de relación r, r2
+    Calcular r según la fórmula establecida y con el vector de pares
+    Calcular r2 según la fórmula establecida y con el vector de pares
+Calcular predicción mejorada yk
+    Calcular yk según la fórmula establecida y con los valores b0, b1, xk
+Calcular significancia
+    Calcular significancia según la fórmula establecida
+Calcular rango del 70%
+    Calcular rango según la fórmula establecida
+Calcular límite superior
+    Calcular límite supeior según la fórmula establecida
+Calcular límite inferior
+    Calcular límite inferior según la fórmula establecida
+Imprimir valores
+    Imprimir valores r, r2, b0, b1, yk con 5 decimales redondeados hacia arriba
+
+Casos de prueba:
+    Casos normales:
+        Los valores x,y son enteros
+        Los valores x,y tienen decimales
+
+    Casos de excepción:
+        No hay pares ordenados
+        Hay pares incompletos: falta x o y
+        El valor de x o y es negativo
+        Los valores x,y no son números
