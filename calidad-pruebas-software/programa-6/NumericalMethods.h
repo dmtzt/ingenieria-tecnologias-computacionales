@@ -9,6 +9,7 @@
  * David Alejandro Martínez Tristán A01610267
  * Fecha de modificación: 29/03/2021
  */
+//.b=59
 #ifndef NUMERICALMETHODS_H
 #define NUMERICALMETHODS_H
 #include <cmath>

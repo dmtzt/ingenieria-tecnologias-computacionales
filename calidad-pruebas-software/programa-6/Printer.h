@@ -34,7 +34,6 @@ class Printer
 void Printer::printResults(int n, double xk, double r, double r2, double b0, double b1, 
                          double yk, double sig, double ran, double LS, double LI, vector<int> errorLog) //.m
 {
-    //.d=67
     cout << "N  = " << n << endl;
     cout << "xk = " << ceilDecimals((double) xk) << endl; //.m
     cout << "r  = " << ceilDecimals(r) << endl; //.m
