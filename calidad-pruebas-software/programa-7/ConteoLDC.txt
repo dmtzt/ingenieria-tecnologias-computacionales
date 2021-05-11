@@ -1,6 +1,6 @@
 CLASES BASE:
    Errors: T=5, I=0, B=14, D=9, M=0, A=0
-   FileReader: T=196, I=10, B=229, D=120, M=8, A=87
+   FileReader: T=186, I=10, B=229, D=125, M=8, A=82
    Printer: T=35, I=1, B=51, D=23, M=3, A=7
    programa-7: T=17, I=0, B=17, D=0, M=3, A=0
 --------------------------------------------
@@ -8,4 +8,4 @@ CLASES NUEVAS:
 --------------------------------------------
 CLASES REUSADAS:
 --------------------------------------------
-Total de LDC=253
+Total de LDC=243

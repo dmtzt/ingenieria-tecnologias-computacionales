@@ -1,7 +1,9 @@
 /*
- * 1. Calcula una regresión lineal a partir de un conjunto de datos extraídos de un archivo dado
- * 2. Aplica dicha regresión para utilizar el método PROBE A, el cual es usado para realizar
- * predicciones de tamaño y tiempo de elaboración de código con base en datos históricos
+ * Calcula una regresion multiple para estimar el numero de horas para un nuevo proyecto
+ * con un numero determinado de LOC agregadas, reusadas y modificadas
+ *
+ * Utiliza datos almacenados en un archivo de horas de desarrollo y LOC agregadas, reusadas
+ * y modificadas de proyectos anteriores para realizar el calculo
  * 
  * David Alejandro Martínez Tristán A01610267
  * Fecha de modificación: 10/05/2021
@@ -17,10 +19,8 @@
 #define B3 3
 #include <iostream>
 #include <fstream>
-#include <utility>
 #include <string>
 #include <vector>
-#include <cctype>
 #include <cmath>
 #include <sstream>
 #include "Errors.h"
@@ -110,10 +110,12 @@ void FileReader::openFile(string fileName)
 
 /*
  * Método central de la clase
- * 1. Lee el valor xk
- * 2. Lee un conjunto de pares ordenados (x,y) hasta el final del archivo
- * 3. Calcula una regresión lineal con base en los datos extraídos
- * Maneja adecuadamente errores cuando un valor no existe, no es numérico o es negativo
+ * Calcula una regresion multiple para estimar el numero de horas para un nuevo proyecto
+ * con un numero determinado de LOC agregadas, reusadas y modificadas
+ *
+ * Utiliza datos almacenados en un archivo de horas de desarrollo y LOC para obtener
+ * los coeficientes de los valores Beta a partir de una regresion multiple con el metodo
+ * de Gauss Jordan.
  */
 //.i
 void FileReader::readFile()
@@ -184,12 +186,6 @@ void FileReader::readFile()
         }
     }
 
-    // if (wArr.size() != xArr.size() && xArr.size() != yArr.size() && yArr.size() != zArr.size())
-    // {
-    //     pushError(ERROR_ARRAYS_DIFFERENT_LENGTHS);
-    //     return;
-    // }
-
     n = wArr.size();
 
     // Row 1
@@ -244,7 +240,6 @@ void FileReader::readFile()
 /*
  * Agrega errores al log de errores
  */
-
 //.i
 void FileReader::pushError(int error)
 {
@@ -276,6 +271,13 @@ vector<int> FileReader::getErrorLog()
     return errorLog;
 }
 
+/*
+ * Resuelve un sistema de ecuaciones de 4 incognitas utilizando el metodo
+ * de Gauss Jordan y los almacena en las variables b0-b3.
+ *
+ * Utiliza los coeficientes de los valores Beta, los cuales fueron obtenidos a partir de
+ * los valores leídos del archivo de entrada.
+*/
 //.i
 void FileReader::gaussMethod()
 {
@@ -388,11 +390,11 @@ double FileReader::getB1()
 
 double FileReader::getB2()
 {
-    return b1;
+    return b2;
 }
 
 double FileReader::getB3()
 {
-    return b1;
+    return b3;
 }
 #endif
