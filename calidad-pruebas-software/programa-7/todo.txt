@@ -1,0 +1,3 @@
+Errores:
+    Faltan valores
+    Los valores no son número
